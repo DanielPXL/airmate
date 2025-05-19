@@ -1,5 +1,6 @@
 #include <Stepper.h>
 
+// Hallo das ist ein Test
 // Anzahl der Schritte pro Umdrehung
 #define STEPS 1024
 
