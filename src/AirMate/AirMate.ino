@@ -1,51 +1,22 @@
-#include <Stepper.h>
-
-// Hallo das ist ein Test
-// Anzahl der Schritte pro Umdrehung
-#define STEPS 1024
-
-// Motorgeschwindigkeit in RPM
-#define MOTOR_RPM 10
-
-const int ButtonPin = 4;
-
-int on = 1;
-
-boolean open = false;
-
-Stepper lockStepper(STEPS, 8, 10, 9, 11); // Motor Pins
-
-void setup()
-{
-  pinMode(ButtonPin, INPUT_PULLUP);
-
+void setup() {
   Serial.begin(9600);
+  wifi_connect();
+  webserver_setup();
+  window_setup();
+  sensors_setup();
+  weather_setup();
 }
 
-void loop()
-{
-    on = digitalRead(ButtonPin);
-    Serial.println(on);
-    Serial.println(open);
-    if (on == LOW && open){
+void loop() {
+  static int64_t lastUpdate = 0;
+  int64_t now = millis();
+  if (now - lastUpdate > 10000) {
+    lastUpdate = now;
 
-      lockStepper.setSpeed(MOTOR_RPM);
-      lockStepper.step(-STEPS);
-      
-      Serial.println("on is pushed!");
-      delay(1000);
-      open = false;
+    weather_update();
+    sensors_update();
+  }
 
-    }else if ( on == LOW && !open){
-
-      lockStepper.setSpeed(MOTOR_RPM);
-      lockStepper.step(STEPS);
-      
-      Serial.println("off is pushed!");
-      delay(1000);
-      open = true;
-
-    }
-  
+  window_loop();
+  webserver_loop();
 }
-
