@@ -1,19 +1,19 @@
 #include <stdint.h>
-#include <DHT.h>
+#include <DHT.h> // DHT sensor library von Adafruit
 #include "Pins.h"
 
 #define DHTTYPE DHT11
 
 
 //Messwerte
-int32_t g_temperature = 20;
-int32_t g_humidity = 55;
-int32_t g_co2ppm = 1200;
+float g_temperature = 20;
+float g_humidity = 55;
+float g_co2ppm = 1200;
 
 //Schwellwerte 
-const int32_t HUMIDITY_THRESHOLD = 60;
-const int32_t CO2THRESHOLD = 1000;
-const int32_t DEWPOINT_MARGIN = 2; 
+const float HUMIDITY_THRESHOLD = 60;
+const float CO2THRESHOLD = 1000;
+const float DEWPOINT_MARGIN = 2; 
 
 
 DHT dht(DTH11_PIN, DHTTYPE);
@@ -34,8 +34,8 @@ void sensors_update() {
   float hum = dht.readHumidity();
 
   if (!isnan(temp) && !isnan(hum)) {
-    g_temperature = (int32_t)temp;
-    g_humidity = (int32_t)hum;
+    g_temperature = temp;
+    g_humidity = hum;
   }
 
   //Button prüfen
@@ -57,8 +57,8 @@ void sensors_update() {
 
 bool sensors_shouldOpen() {
   // Taupunkt berechnen etc.
-  float temp = (float)g_temperature;
-  float hum = (float)g_humidity;
+  float temp = g_temperature;
+  float hum = g_humidity;
 
   //vereinfachte Magnus-Formel zum Berechnen des Taupunkts
   float a = 17.62;
