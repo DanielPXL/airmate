@@ -15,7 +15,6 @@ const int32_t HUMIDITY_THRESHOLD = 60;
 const int32_t CO2THRESHOLD = 1000;
 const int32_t DEWPOINT_MARGIN = 2; 
 
-bool g_buttonPressed = false;
 
 DHT dht(DTH11_PIN, DHTTYPE);
 
@@ -40,11 +39,8 @@ void sensors_update() {
   }
 
   //Button prüfen
-  if (digitalRead(BUTTON_PIN) == LOW) {
-    g_buttonPressed = true;
-  } else {
-    g_buttonPressed = false;
-  }
+  bool g_buttonPressed = digitalRead(BUTTON_PIN) == LOW;
+  
 
   /* 
     Read CO2 sensor and update g_co2ppm
