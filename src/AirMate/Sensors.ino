@@ -3,7 +3,7 @@
 #include "Pins.h"
 
 #define DHTTYPE DHT11
-DHT dht(DTH11_PIN, DHTTYPE);
+
 
 //Messwerte
 int32_t g_temperature = 20;
@@ -15,13 +15,15 @@ const int32_t HUMIDITY_THRESHOLD = 60;
 const int32_t CO2THRESHOLD = 1000;
 const int32_t DEWPOINT_MARGIN = 2; 
 
-
-
-
 bool g_buttonPressed = false;
 
+DHT dht(DTH11_PIN, DHTTYPE);
+
 void sensors_setup() {
+  // dht sensor setup
   dht.begin();
+
+  // button setup
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   // CO2 sensor setup
