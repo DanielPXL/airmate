@@ -41,6 +41,9 @@ void sensors_update() {
   //Button prüfen
   bool g_buttonPressed = digitalRead(BUTTON_PIN) == LOW;
   
+  if (g_buttonPressed) {
+    window_ButtonToggle();
+  }
 
   /* 
     Read CO2 sensor and update g_co2ppm
@@ -50,7 +53,7 @@ void sensors_update() {
 
 
   // If shouldOpen(), call window_startOpening();
-  if (g_buttonPressed || sensors_shouldOpen()) {
+  if (sensors_shouldOpen()) {
     window_startOpening();
   }
 }
