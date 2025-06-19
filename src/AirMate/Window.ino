@@ -17,7 +17,7 @@ State g_lastDirection = State::Closed; // Nur Opening oder Closing
 
 // Die beiden Zeilen blockieren aus irgendeinem Grund den restlichen Code...
 // Erst unkommentieren, wenns gebraucht wird
-// Stepper g_lockStepper(STEPS, LOCKMOTOR_PINS); // Motor Pins
+Stepper g_lockStepper(STEPS, LOCKMOTOR_PINS); // Motor Pins
 Stepper g_gearStepper(STEPS, GEARMOTOR_PINS); // Motor Pins
 
 void window_setup()
@@ -25,48 +25,53 @@ void window_setup()
   g_gearStepper.setSpeed(MOTOR_RPM);
 }
 
-void window_ButtonToggle() {
+void window_buttonToggle() {
   switch (g_state) {
-    case Closed:
-      window_startOpening();
+    case State::Closed:
       break;
-    case Opening:
+    case State::Opening:
       g_state = Paused;
+      g_lastDirection == State::Opening;
       break;
-    case Closing:
+    case State::Closing:
       g_state = Paused;
+      g_lastDirection == State::Closing;
       break;
-    case Paused:
+    case State::Paused:
       if (g_lastDirection == Opening) {
+        
         g_state = Closing;
-      } else {
+        g_lastDirection == Closing;
+      } else if (g_lastDirection == Closing) {
+        
         g_state = Opening;
+        g_lastDirection == Opening;
       }
       break;
-    case Open:
-      window_startClosing();
+    case State::Open:
+      
       break;
   }
 }
 
+// Drei Hilfsmethoden zum Ansteuern der Motoren
+
 void window_startOpening() {
-  if (g_state == State::Closed || g_state == State::Paused) {
-    g_state = State::Opening;
-    g_lastDirection = State::Opening;
-  }
+  // TODO: Motoren ansteuern zum öffnen
 }
 
 void window_startClosing() {
-  if (g_state == State::Open || g_state == State::Paused) {
-    g_state = State::Closing;
-    g_lastDirection = State::Closing;
-  }
+  // TODO: Motoren ansteuern zum schließen
+}
+
+void window_stopMotor() {
+  // TODO: Motoren werden abgeschaltet
 }
 
 void window_loop() {
   switch (g_state) {
     case Closed: {
-      // TODO: Motor aus, wenn Fenster zu --> Reedsensor
+      // TODO: Motor aus (window_stopMotor()), wenn Fenster zu --> Reedsensor
       break;
     }
     case Opening: {
@@ -74,7 +79,7 @@ void window_loop() {
       break;
     }
     case Open: {
-      // TODO: Motor aus, wenn Fenster offen
+      // TODO: Motor aus (window_stopMotor()), wenn Fenster offen
       break;
     }
     case Closing: {
@@ -82,10 +87,13 @@ void window_loop() {
       break;
     }
     case Paused: {
-      // TODO: Motor stoppen
+      // TODO: Motor stoppen 
       break;
     }
   }
 }
 
+// Bedenken:
+// Wenn Fenster geschlossen, dann muss lockMotor agieren.
+// Wenn geöffnet werden soll, muss lockMotor erst öffnen, erst wenn fertig, dann gearMotor aktivieren 
 

@@ -42,7 +42,7 @@ void sensors_update() {
   bool g_buttonPressed = digitalRead(BUTTON_PIN) == LOW;
   
   if (g_buttonPressed) {
-    window_ButtonToggle();
+    window_buttonToggle();
   }
 
   /* 
@@ -52,9 +52,9 @@ void sensors_update() {
   g_co2ppm = 1200;  // TODO: Echten Sensor einbinden
 
 
-  // If shouldOpen(), call window_startOpening();
+  // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
-    window_startOpening();
+    // TODO
   }
 }
 
