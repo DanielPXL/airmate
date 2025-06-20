@@ -17,6 +17,6 @@ void loop() {
     sensors_update();
   }
 
-  window_loop();
+  window_buttonToggle();
   webserver_loop();
 }

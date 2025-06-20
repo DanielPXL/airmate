@@ -19,14 +19,18 @@ const float DEWPOINT_MARGIN = 2;
 DHT dht(DTH11_PIN, DHTTYPE);
 
 void sensors_setup() {
-  // dht sensor setup
-  dht.begin();
-
   // button setup
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
+  // dht sensor setup
+  dht.begin();
+
   // CO2 sensor setup
 }
+
+// Button
+bool button_push = false;
+bool button_oldstat = false;
 
 void sensors_update() {
   // Read DHT11 and update g_temperature and g_humidity
@@ -38,12 +42,18 @@ void sensors_update() {
     g_humidity = hum;
   }
 
-  //Button prüfen
-  bool g_buttonPressed = digitalRead(BUTTON_PIN) == LOW;
-  
-  if (g_buttonPressed) {
+  // Button prüfen
+  // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
+  button_push = digitalRead(BUTTON_PIN) == LOW; // LOW = gedrückt (INPUT_PULLUP)
+
+  if (button_push && !button_oldstat) {
+    // Button wurde gedrückt
     window_buttonToggle();
   }
+
+  // Buttonstatus speichern
+  button_oldstat = button_push;
+
 
   /* 
     Read CO2 sensor and update g_co2ppm
