@@ -56,32 +56,41 @@ void window_buttonToggle() {
 // Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren 
 
 void window_startOpening() {
-  if (g_state == State::Closed) {
-    // TODO: lockMotor ansteuern --> Überwachen, wie viele Steps, um zu wissen, wann Fenster komplett entsperrt
-    // warte bis lockMotor gestoppt, dann continue
-  }
-
   g_state = Opening;
   g_lastDirection = Opening;
-
-  // TODO: stepMotor ansteuern zum öffnen --> Überwachen, wie viele Steps, um zu wissen, wann komplett offen
-
-  //if (TODO) { // Wenn anzahl an STEPS erreicht, dann Fenster offen und stopMotor
-  //  window_stopMotor();
-  //}
 }
 
 void window_startClosing() {
   g_state = Closing;
   g_lastDirection = Closing;
-  // TODO: Motoren ansteuern zum schließen
-  //if (TODO) { // Reedsensor meldet sich, dann ist Fenster zu und stopMotor
-  //  window_stopMotor();
-  //  // lockMotor ansteuern --> Überwachen, wie viele Steps, um zu wissen, wann Fenster komplett gesperrt, lockMotor stoppen
-  //}
 }
 
 void window_stopMotor() {
   g_state = Paused;
   // TODO: Motoren werden abgeschaltet
+}
+
+void window_loop() {
+  switch (g_state) {
+    case Closed: {
+      // TODO: Motor aus (window_stopMotor()), wenn Fenster zu --> Reedsensor
+      break;
+    }
+    case Opening: {
+      // TODO: Motor öffnet Fenster --> Überwachen, wie viele Steps, um zu wissen, wann komplett offen
+      break;
+    }
+    case Open: {
+      // TODO: Motor aus (window_stopMotor()), wenn Fenster offen
+      break;
+    }
+    case Closing: {
+      // TODO: Motor schließt Fenster --> Überwachen, wie viel Steps, falls gestoppt wird. Zu wenn Reedsensor
+      break;
+    }
+    case Paused: {
+      // TODO: Motor stoppen 
+      break;
+    }
+  }
 }
