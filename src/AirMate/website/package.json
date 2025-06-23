@@ -1,0 +1,15 @@
+{
+    "name": "website",
+    "source": "src/index.html",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build && gzip --best --force dist/index.html && xxd -i -n index_html dist/index.html.gz > dist/index_html.h"
+    },
+    "license": "GPL-3.0-or-later",
+    "devDependencies": {
+        "prettier": "3.6.0",
+        "vite": "^6.3.5",
+        "vite-plugin-minify": "^2.1.0",
+        "vite-plugin-singlefile": "^2.2.0"
+    }
+}
