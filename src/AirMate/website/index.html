@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AirMate</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+            rel="stylesheet"
+        />
+        <link href="index.css" rel="stylesheet" />
+        <link href="switch.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="containerContainer">
+            <div class="container">
+                <section class="valuesContainer">
+                    <div class="sensorsContainer">
+                        <div class="containerHeader">Zimmer</div>
+                        <div class="valueBox">
+                            <header>Temperatur</header>
+                            <div id="sensorTemperature">20°C</div>
+                        </div>
+                        <div class="valueBox">
+                            <header>Luftfeuchtigkeit</header>
+                            <div id="sensorHumidity">50%</div>
+                        </div>
+                        <div class="valueBox">
+                            <header>CO<sub>2</sub></header>
+                            <div id="sensorCO2ppm">2000ppm</div>
+                        </div>
+                    </div>
+
+                    <div class="weatherContainer">
+                        <header class="containerHeader">Wetter</header>
+                        <div class="valueBox">
+                            <header>Temperatur</header>
+                            <div id="weatherTemperature">21°C</div>
+                        </div>
+                        <div class="valueBox">
+                            <header>Luftfeuchtigkeit</header>
+                            <div id="weatherHumidity">50%</div>
+                        </div>
+                        <div class="valueBox">
+                            <header>Gefühlte Temp.</header>
+                            <div id="weatherApparentTemperature">16°C</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="controlsContainer">
+                    <button class="openButton" id="openButton">Öffnen</button>
+
+                    <div class="autoEnableContainer">
+                        <label class="switch">
+                            <input id="autoEnableInput" type="checkbox" />
+                            <span class="slider round"></span>
+                        </label>
+                        <div>Automatisch öffnen</div>
+                    </div>
+                </section>
+            </div>
+            <footer class="footer">
+                <ul class="footerLinks">
+                    <li>
+                        <a
+                            href="https://wp.uni-oldenburg.de/softskills-11-gruppe-13/"
+                            >Homepage</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://github.com/DanielPXL/airmate"
+                            >GitHub</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://open-meteo.com/">Wetterdaten</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/DanielPXL/airmate"
+                            >Third-Party-Lizenzen</a
+                        >
+                    </li>
+                </ul>
+                <img class="icon" src="assets/icon.png" />
+            </footer>
+        </div>
+
+        <script type="module" src="index.js"></script>
+    </body>
+</html>

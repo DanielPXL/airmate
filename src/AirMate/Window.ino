@@ -20,6 +20,20 @@ State g_lastDirection = State::Closing; // Nur Opening oder Closing
 Stepper g_lockStepper(STEPS, LOCKMOTOR_PINS); // Motor Pins
 Stepper g_gearStepper(STEPS, GEARMOTOR_PINS); // Motor Pins
 
+
+const char* window_getState() {
+  switch (g_state) {
+    case State::Closed:
+      return "closed";
+    case State::Opening:
+      return "opening";
+    case State::Open:
+      return "open";
+    case State::Closing:
+      return "closing";
+  }
+}
+
 void window_setup() {
   g_gearStepper.setSpeed(MOTOR_RPM);
 }
