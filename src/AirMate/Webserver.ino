@@ -12,9 +12,13 @@ void handleIndex() {
   );
 }
 
-void handleData() {
-  char dataJson[256];
-  sprintf(dataJson, "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %f}}", g_temperature, g_humidity, g_co2ppm);
+void sendData() {
+  char dataJson[512];
+  sprintf(
+    dataJson,
+    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %f}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"status\": \"%c\", \"autoEnabled\": %d}",
+    g_temperature, g_humidity, g_co2ppm, g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint, g_weatherApparentTemperature, window_getState(), g_autoEnabled
+  );
   server.send(
     200,
     "application/json",
@@ -22,9 +26,28 @@ void handleData() {
   );
 }
 
+void handleButtonPush() {
+  // window_buttonToggle callen
+  sendData();
+}
+
+void handleSetAuto() {
+  g_autoEnabled = true;
+  sendData();
+}
+
+void handleResetAuto() {
+  g_autoEnabled = false;
+  sendData();
+}
+
 void webserver_setup() {
   server.on("/", handleIndex);
-  server.on("/data", handleData);
+  server.on("/data", sendData);
+  server.on("/buttonPushed", HTTP_POST, handleButtonPush);
+  server.on("/setAuto", HTTP_POST, handleSetAuto);
+  server.on("/resetAuto", HTTP_POST, handleResetAuto);
+
   server.begin();
   Serial.println("Webserver started");
 }

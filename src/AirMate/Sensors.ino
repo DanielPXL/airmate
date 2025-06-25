@@ -4,6 +4,7 @@
 
 #define DHTTYPE DHT11
 
+bool g_autoEnabled = true;
 
 //Messwerte
 float g_temperature = 20;
@@ -56,6 +57,10 @@ void sensors_update() {
 }
 
 bool sensors_shouldOpen() {
+  if (!g_autoEnabled) {
+    return false;
+  }
+
   // Taupunkt berechnen etc.
   float temp = g_temperature;
   float hum = g_humidity;

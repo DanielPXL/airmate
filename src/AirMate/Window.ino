@@ -22,6 +22,19 @@ void window_setup()
   
 }
 
+const char* window_getState() {
+  switch (g_state) {
+    case State::Closed:
+      return "closed";
+    case State::Opening:
+      return "opening";
+    case State::Open:
+      return "open";
+    case State::Closing:
+      return "closing";
+  }
+}
+
 void window_startOpening() {
   if (g_state != State::Closed) {
     return;
