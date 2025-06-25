@@ -59,7 +59,7 @@ void sensors_update() {
   float Taupunkt_2;
   float DeltaTP;
 
-  Taupunkt_1 = taupunkt(g_temperature, g_humidity)
+  Taupunkt_1 = taupunkt(g_temperature, g_humidity);
   Taupunkt_2 = g_weatherDewPoint;
   DeltaTP = Taupunkt_1 - Taupunkt_2;
 
@@ -87,16 +87,7 @@ bool sensors_shouldOpen() {
 
 
 
-  // TODO: Auch Wetter (zb g_weatherTemperature) miteinberechnen? 
-
-  // Fenster öffnen bei hoher Luftfeuchtigkeit,
-  // Taupunkt sehr nah an Temperatur,
-  // oder hoher CO₂-Konzentration
-  return (
-    hum >= HUMIDITY_THRESHOLD ||
-    (temp - dewPoint) < DEWPOINT_MARGIN ||
-    g_co2ppm >= CO2THRESHOLD
-  );
+  // TODO
 }
 
 
@@ -112,7 +103,7 @@ float taupunkt(float t, float r) {
   }
 
   // Sättigungsdampfdruck in hPa
-  fload sdd = 6.1078 * pow(10, (a*t)/(b+t));
+  float sdd = 6.1078 * pow(10, (a*t)/(b+t));
 
   // Dampfdruck in hPa
   float dd = sdd * (r/100);
@@ -122,5 +113,5 @@ float taupunkt(float t, float r) {
 
   // Taupunkttemperatur (°C)
   float tt = (b*v) / (a-v);
-  return { tt };
+  return tt;
 }
