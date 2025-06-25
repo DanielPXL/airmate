@@ -27,7 +27,7 @@ void sendData() {
 }
 
 void handleButtonPush() {
-  // window_buttonToggle callen
+  window_buttonToggle();
   sendData();
 }
 

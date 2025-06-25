@@ -4,6 +4,8 @@
 
 #define DHTTYPE DHT11
 
+#define SCHALTmin 5.0 // minimaler Taupunktunterschied, bei dem das Fenster öffnet
+
 bool g_autoEnabled = true;
 
 //Messwerte
@@ -14,8 +16,6 @@ float g_co2ppm = 1200;
 //Schwellwerte 
 const float HUMIDITY_THRESHOLD = 60;
 const float CO2THRESHOLD = 1000;
-const float DEWPOINT_MARGIN = 2; 
-
 
 DHT dht(DTH11_PIN, DHTTYPE);
 
@@ -52,6 +52,17 @@ void sensors_update() {
     window_buttonToggle();
   }
 
+
+
+// Taupunktberechnung
+  float Taupunkt_1;
+  float Taupunkt_2;
+  float DeltaTP;
+
+  Taupunkt_1 = taupunkt(g_temperature, g_humidity)
+  Taupunkt_2 = g_weatherDewPoint;
+  DeltaTP = Taupunkt_1 - Taupunkt_2;
+
   // Buttonstatus speichern
   button_oldstat = button_push;
 
@@ -61,7 +72,6 @@ void sensors_update() {
     (hier: Dummywert)
   */ 
   g_co2ppm = 1200;  // TODO: Echten Sensor einbinden
-
 
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
@@ -74,15 +84,8 @@ bool sensors_shouldOpen() {
     return false;
   }
 
-  // Taupunkt berechnen etc.
-  float temp = g_temperature;
-  float hum = g_humidity;
 
-  //vereinfachte Magnus-Formel zum Berechnen des Taupunkts
-  float a = 17.62;
-  float b = 243.12;
-  float gamma = log(hum / 100.0) + (a * temp) / (b + temp);
-  float dewPoint = (b * gamma) / (a - gamma);
+
 
   // TODO: Auch Wetter (zb g_weatherTemperature) miteinberechnen? 
 
@@ -94,4 +97,30 @@ bool sensors_shouldOpen() {
     (temp - dewPoint) < DEWPOINT_MARGIN ||
     g_co2ppm >= CO2THRESHOLD
   );
+}
+
+
+float taupunkt(float t, float r) {
+  float a, b;
+
+  if (t >= 0) {
+    a = 7.5;
+    b = 237.3;
+  } else if (t < 0) {
+    a = 7.6;
+    b = 240.7;
+  }
+
+  // Sättigungsdampfdruck in hPa
+  fload sdd = 6.1078 * pow(10, (a*t)/(b+t));
+
+  // Dampfdruck in hPa
+  float dd = sdd * (r/100);
+
+  // v-Parameter
+  float v = log10(dd/6.1078);
+
+  // Taupunkttemperatur (°C)
+  float tt = (b*v) / (a-v);
+  return { tt };
 }
