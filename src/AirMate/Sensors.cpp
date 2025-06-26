@@ -7,7 +7,7 @@
 
 #define DHTTYPE DHT11
 
-#define SCHALTmin 5.0 // minimaler Taupunktunterschied, bei dem das Fenster öffnet
+#define SCHALTminDewPoint 5.0 // minimaler Taupunktunterschied, bei dem das Fenster öffnen soll
 
 bool g_autoEnabled = true;
 
