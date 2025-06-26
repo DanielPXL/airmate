@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
 #include "Pins.h"
+#include "Weather.h"
+#include "Sensors.h"
+#include "Window.h"
 
 #define DHTTYPE DHT11
 
@@ -12,6 +15,8 @@ bool g_autoEnabled = true;
 float g_temperature = 20;
 float g_humidity = 55;
 float g_co2ppm = 1200;
+
+bool g_buttonOldPush = false;
 
 //Schwellwerte 
 const float HUMIDITY_THRESHOLD = 60;
@@ -29,10 +34,6 @@ void sensors_setup() {
   // CO2 sensor setup
 }
 
-// Button
-bool button_push = false;
-bool button_oldstat = false;
-
 void sensors_update() {
   // Read DHT11 and update g_temperature and g_humidity
   float temp = dht.readTemperature();
@@ -45,27 +46,14 @@ void sensors_update() {
 
   // Button prüfen
   // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
-  button_push = digitalRead(BUTTON_PIN) == LOW; // LOW = gedrückt (INPUT_PULLUP)
-
-  if (button_push && !button_oldstat) {
+  bool buttonPush = digitalRead(BUTTON_PIN) == LOW; // LOW = gedrückt (INPUT_PULLUP)
+  if (buttonPush && !g_buttonOldPush) {
     // Button wurde gedrückt
     window_buttonToggle();
   }
 
-
-
-// Taupunktberechnung
-  float Taupunkt_1;
-  float Taupunkt_2;
-  float DeltaTP;
-
-  Taupunkt_1 = taupunkt(g_temperature, g_humidity);
-  Taupunkt_2 = g_weatherDewPoint;
-  DeltaTP = Taupunkt_1 - Taupunkt_2;
-
   // Buttonstatus speichern
-  button_oldstat = button_push;
-
+  g_buttonOldPush = buttonPush;
 
   /* 
     Read CO2 sensor and update g_co2ppm
@@ -84,14 +72,20 @@ bool sensors_shouldOpen() {
     return false;
   }
 
+  // Taupunktberechnung
+  float Taupunkt_1;
+  float Taupunkt_2;
+  float DeltaTP;
 
-
+  Taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
+  Taupunkt_2 = g_weatherDewPoint;
+  DeltaTP = Taupunkt_1 - Taupunkt_2;
 
   // TODO
+  return false;
 }
 
-
-float taupunkt(float t, float r) {
+float sensors_taupunkt(float t, float r) {
   float a, b;
 
   if (t >= 0) {

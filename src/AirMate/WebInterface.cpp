@@ -1,5 +1,10 @@
-#include <WebServer.h>
 #include "website/dist/index_html.h"
+#include <WebServer.h>
+#include <HardwareSerial.h>
+#include "Window.h"
+#include "Weather.h"
+#include "Sensors.h"
+#include "WebInterface.h"
 
 WebServer server(80);
 
@@ -16,7 +21,7 @@ void sendData() {
   char dataJson[512];
   sprintf(
     dataJson,
-    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %f}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"status\": \"%c\", \"autoEnabled\": %d}",
+    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %f}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"status\": \"%s\", \"autoEnabled\": %d}",
     g_temperature, g_humidity, g_co2ppm, g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint, g_weatherApparentTemperature, window_getState(), g_autoEnabled
   );
   server.send(
@@ -41,7 +46,7 @@ void handleResetAuto() {
   sendData();
 }
 
-void webserver_setup() {
+void webinterface_setup() {
   server.on("/", handleIndex);
   server.on("/data", sendData);
   server.on("/buttonPushed", HTTP_POST, handleButtonPush);
@@ -52,6 +57,6 @@ void webserver_setup() {
   Serial.println("Webserver started");
 }
 
-void webserver_loop() {
+void webinterface_loop() {
   server.handleClient();
 }
