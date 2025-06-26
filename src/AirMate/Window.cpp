@@ -1,16 +1,9 @@
 #include <Stepper.h>
 #include "Pins.h"
+#include "Window.h"
 
 #define MOTOR_RPM 10 //
 #define STEPS 1024 // TODO: Muss wahrscheinlich noch angepasst werden die Steps!!!
-
-enum State {
-  Closed,
-  Opening,
-  Open,
-  Closing,
-  Paused,
-};
 
 State g_state = State::Closed;
 State g_lastDirection = State::Closing; // Nur Opening oder Closing
@@ -19,7 +12,6 @@ State g_lastDirection = State::Closing; // Nur Opening oder Closing
 // Erst unkommentieren, wenns gebraucht wird
 Stepper g_lockStepper(STEPS, LOCKMOTOR_PINS); // Motor Pins
 Stepper g_gearStepper(STEPS, GEARMOTOR_PINS); // Motor Pins
-
 
 const char* window_getState() {
   switch (g_state) {

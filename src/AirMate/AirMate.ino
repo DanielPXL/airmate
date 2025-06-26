@@ -1,10 +1,15 @@
+#include "Window.h"
+#include "Weather.h"
+#include "WIFILogin.h"
+#include "WebInterface.h"
+#include "Sensors.h"
+
 void setup() {
   Serial.begin(9600);
   wifi_connect();
-  webserver_setup();
+  webinterface_setup();
   window_setup();
   sensors_setup();
-  weather_setup();
 
   // Bei startup einmal schon updaten, sonst wird erst 30s gewartet
   weather_update();
@@ -26,5 +31,5 @@ void loop() {
   }
 
   window_loop();
-  webserver_loop();
+  webinterface_loop();
 }

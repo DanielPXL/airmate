@@ -5,7 +5,7 @@
 #define REEDSENSOR_PIN 23
 #define DTH11_PIN 22
 
-#define LOCKMOTOR_PINS 8, 9, 10, 11
-#define GEARMOTOR_PINS 12, 13, 14, 15
+#define LOCKMOTOR_PINS 14, 15, 26, 25
+#define GEARMOTOR_PINS 2, 4, 5, 18
 
 #endif
