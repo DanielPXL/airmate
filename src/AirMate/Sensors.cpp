@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
+#include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
+// und EspSoftwareSerial library von Dirk Kaar etc
 #include "Pins.h"
 #include "Weather.h"
 #include "Sensors.h"
@@ -14,7 +16,7 @@ bool g_autoEnabled = true;
 //Messwerte
 float g_temperature = 20;
 float g_humidity = 55;
-float g_co2ppm = 1200;
+int32_t g_co2ppm = 1200;
 
 bool g_buttonOldPush = false;
 
@@ -23,6 +25,7 @@ const float HUMIDITY_THRESHOLD = 60;
 const float CO2THRESHOLD = 1000;
 
 DHT dht(DTH11_PIN, DHTTYPE);
+MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
 void sensors_setup() {
   // button setup
@@ -30,8 +33,6 @@ void sensors_setup() {
 
   // dht sensor setup
   dht.begin();
-
-  // CO2 sensor setup
 }
 
 void sensors_update() {
@@ -55,15 +56,12 @@ void sensors_update() {
   // Buttonstatus speichern
   g_buttonOldPush = buttonPush;
 
-  /* 
-    Read CO2 sensor and update g_co2ppm
-    (hier: Dummywert)
-  */ 
-  g_co2ppm = 1200;  // TODO: Echten Sensor einbinden
+  // CO2 Sensor lesen
+  g_co2ppm = co2.readCO2UART();
 
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
-    // TODO
+    window_startOpening();
   }
 }
 
