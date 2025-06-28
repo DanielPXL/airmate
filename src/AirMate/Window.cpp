@@ -1,3 +1,4 @@
+#include <AccelStepper.h>
 #include <Stepper.h>
 #include "Pins.h"
 #include "Window.h"
@@ -10,11 +11,12 @@
 #define DECEL_STEPS 200         // Steps zum Abbremsen
 #define TOTAL_MOVE_STEPS 800    // Gesamtbewegung (z.B. 800 Schritte bis Fensterende)
 
-/* alter Code: 
+/* alter Code mit der Stepper Libary von Arduino:
+
 #define MOTOR_RPM 10 //
 #define STEPS 1024 // TODO: Muss wahrscheinlich noch angepasst werden die Steps!!!
 */
-
+/*
 State g_state = State::Closed;
 State g_lastDirection = State::Closing; // Nur Opening oder Closing
 
@@ -88,8 +90,18 @@ void window_stopMotor() {
   // TODO: Motoren werden abgeschaltet
 }
 
-void dynamicMovement(){
-if (stepsRemaining > TOTAL_MOVE_STEPS - ACCEL_STEPS) {
+
+void window_loop() {
+  if (g_state == Opening || g_state == Closing) {
+    int direction = (g_state == Opening) ? 1 : -1;
+
+    // berechnung von verlbeibenden steps
+    int stepsRemaining = (g_state == Opening)
+        ? TOTAL_MOVE_STEPS - g_stepPosition
+        : g_stepPosition;
+
+    //dynamische steuerung von der Geschwindigkeit in abhängigkeit von der aktuellen Position
+    if (stepsRemaining > TOTAL_MOVE_STEPS - ACCEL_STEPS) {
       // Beschleunigung
       int delta = TOTAL_MOVE_STEPS - stepsRemaining;
       int rpm = MOTOR_MIN_RPM + (delta * (MOTOR_MAX_RPM - MOTOR_MIN_RPM)) / ACCEL_STEPS;
@@ -115,21 +127,82 @@ if (stepsRemaining > TOTAL_MOVE_STEPS - ACCEL_STEPS) {
     } else if (g_stepPosition >= TOTAL_MOVE_STEPS) {
       g_state = Open;
       window_stopMotor();
-    }
+    }   
+  }
 }
 
-void calcPosition() {
-  int stepsRemaining = (g_state == Opening)
-        ? TOTAL_MOVE_STEPS - g_stepPosition
-        : g_stepPosition;
+*/
+
+//Neuer Code mit Accelstepper Libary
+
+#define MAX_SPEED 400
+#define ACCELERATION 200
+#define TOTAL_MOVE_STEPS 1024  // muss auf die passende Länge noch Kalibriert werden
+
+
+AccelStepper gearStepper(AccelStepper::FULL4WIRE, GEARMOTOR_PINS);
+
+// Fensterzustände
+State g_state = State::Closed;
+State g_lastDirection = State::Closing;
+
+const char* window_getState() {
+  switch (g_state) {
+    case State::Closed: return "closed";
+    case State::Opening: return "opening";
+    case State::Open: return "open";
+    case State::Closing: return "closing";
+    case State::Paused: return "paused";
+    default: return "unknown";
+  }
+}
+
+void window_setup() {
+  gearStepper.setMaxSpeed(MAX_SPEED);
+  gearStepper.setAcceleration(ACCELERATION);
+  window_startOpening(); // Sofortiger Testlauf beim Starten 
+}
+
+void window_buttonToggle() {
+  switch (g_state) {
+    case Closed: window_startOpening(); break;
+    case Opening:
+    case Closing: window_stopMotor(); break;
+    case Paused:
+      (g_lastDirection == Opening) ? window_startClosing() : window_startOpening();
+      break;
+    case Open: window_startClosing(); break;
+  }
+}
+
+void window_startOpening() {
+  g_state = Opening;
+  g_lastDirection = Opening;
+  gearStepper.moveTo(TOTAL_MOVE_STEPS);
+}
+
+void window_startClosing() {
+  g_state = Closing;
+  g_lastDirection = Closing;
+  gearStepper.moveTo(0);
+}
+
+void window_stopMotor() {
+  g_state = Paused;
+  gearStepper.stop();  // Soft Stop
 }
 
 void window_loop() {
-  if (g_state == Opening || g_state == Closing) {
-    int direction = (g_state == Opening) ? 1 : -1;
+  gearStepper.run(); // Muss regelmäßig aufgerufen werden
 
-    calcPosition();
-    dynamicMovement();
-    
+  switch (g_state) {
+    case Opening:
+      if (gearStepper.distanceToGo() == 0) g_state = Open;
+      break;
+    case Closing:
+      if (gearStepper.distanceToGo() == 0) g_state = Closed;
+      break;
+    default:
+      break;
   }
 }
