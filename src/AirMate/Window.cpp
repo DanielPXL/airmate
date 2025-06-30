@@ -27,6 +27,14 @@ const char* window_getState() {
       return "open";
     case State::Closing:
       return "closing";
+    case State::Paused:
+      return "pausing";
+    case State::Locking:
+      return "locking";
+    case State::Unlocking:
+      return "unlocking";
+    case State::Alarm:
+      return "alarm";
   }
 }
 
@@ -39,6 +47,7 @@ void window_setup() {
 // (TODO:) Sensor- und Wetterdaten setzen entsprechend g_state
 void window_buttonToggle() {
   switch (g_state) {
+    case State::Alarm:
     case State::Closed:
       window_startOpening();
       break;

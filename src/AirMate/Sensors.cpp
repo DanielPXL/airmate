@@ -1,3 +1,4 @@
+#include "esp32-hal-gpio.h"
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
 #include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
@@ -31,6 +32,9 @@ void sensors_setup() {
   // button setup
   pinMode(BUTTON_PIN, INPUT_PULLDOWN);
 
+  // Reed sensor setup
+  pinMode(REEDSENSOR_PIN, INPUT);
+
   // dht sensor setup
   dht.begin();
 }
@@ -55,6 +59,11 @@ void sensors_update() {
 
   // Buttonstatus speichern
   g_buttonOldPush = buttonPush;
+
+  if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
+    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
+    g_state == State::Alarm;
+  }
 
   // CO2 Sensor lesen
   // Funktioniert nur, wenn Logging ausgeschaltet ist
