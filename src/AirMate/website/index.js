@@ -77,3 +77,17 @@ setInterval(updateData, 1000);
 openButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
 
+
+const dialog = document.getElementById('siteSettings');
+    const openBtn = document.getElementById('openSettings');
+    const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+
+    openBtn.addEventListener('click', () => {
+      dialog.showModal();
+    });
+
+    toggleDarkModeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+
+

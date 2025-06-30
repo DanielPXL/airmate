@@ -26,6 +26,11 @@ body {
     margin: 0;
     padding: 0;
     height: 100dvh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: #121212;
 }
 
 .icon {
@@ -211,5 +216,28 @@ body {
 }
 
 .weatherDataButton:active {
+    background-color: var(--popupButton-color-active);
+}
+
+.settingsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settingsButton {
+    width: 8em;
+    height: 2em;
+    padding: 0.2em;
+    background: gray;
+    cursor: pointer;
+    border-radius: 1em;
+}
+
+.settingsButton:hover {
+    background-color: var(--popupButton-color-hover);
+}
+
+.settingsButton:active {
     background-color: var(--popupButton-color-active);
 }

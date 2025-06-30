@@ -8,97 +8,110 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet" />
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet" />
     <link href="index.css" rel="stylesheet" />
     <link href="switch.css" rel="stylesheet" />
 </head>
 
 <body>
+    <dialog open id="siteSettings">
+        <h2>Einstellungen</h2>
+        <h3>Theme</h3>
+        <div>
+            <button id="toggleDarkMode" class="dialog-button">Theme umschalten</button>
+        <form method="dialog">
+            <button>Schließen</button>
+        </form>
+    </dialog>
     <div class="containerContainer">
-        <div class="container">
-            <section class="valuesContainer">
-                <div class="sensorsContainer">
-                    <div class="containerHeader">Zimmer</div>
-                    <div class="valueBox">
-                        <header>Temperatur</header>
-                        <div id="sensorTemperature">20°C</div>
-                    </div>
-                    <div class="valueBox">
-                        <header>Luftfeuchtigkeit</header>
-                        <div id="sensorHumidity">50%</div>
-                    </div>
-                    <div class="valueBox">
-                        <header>CO<sub>2</sub></header>
-                        <div id="sensorCO2ppm">2000ppm</div>
-                    </div>
-                </div>
-
-                <div class="weatherContainer">
-                    <header class="containerHeader">Wetter</header>
-                    <div class="valueBox">
-                        <header>Temperatur</header>
-                        <div id="weatherTemperature">21°C</div>
-                    </div>
-                    <div class="valueBox">
-                        <header>Luftfeuchtigkeit</header>
-                        <div id="weatherHumidity">50%</div>
-                    </div>
-                    <div class="valueBox">
-                        <header>Gefühlte Temp.</header>
-                        <div id="weatherApparentTemperature">16°C</div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="controlsContainer">
-                <button class="openButton" id="openButton">Öffnen</button>
-
-                <div class="autoEnableContainer">
-                    <label class="switch">
-                        <input id="autoEnableInput" type="checkbox" />
-                        <span class="slider round"></span>
-                    </label>
-                    <div>Automatisch öffnen</div>
-                </div>
-            </section>
+        <div class="settingsContainer">
+            <button class="settingsButton" id="openSettings">Einstellungen</button>
         </div>
-
-        <dialog open class="windowSecurity">
-            <p>Fenster ist offen!</p>
-            <form method="dialog">
-                <button class="windowSecurityButton">OK</button>
-                <a class="windowSecurityButton" href="tel:110">Notruf</a>
-            </form>
-        </dialog>
-
-        <dialog open class="weatherData">
-            <h2><u>Wetterdaten</u></h2>
-            <h2><u>Raumdaten</u></h2>
-            <form method="dialog">
-                <button class="weatherDataButton">OK</button>
-            </form>
-        </dialog>
-
-        <footer class="footer">
-            <ul class="footerLinks">
-                <li>
-                    <a href="https://wp.uni-oldenburg.de/softskills-11-gruppe-13/">Homepage</a>
-                </li>
-                <li>
-                    <a href="https://github.com/DanielPXL/airmate">GitHub</a>
-                </li>
-                <li>
-                    <a href="https://open-meteo.com/">Wetterdaten</a>
-                </li>
-                <li>
-                    <a href="https://github.com/DanielPXL/airmate">Third-Party-Lizenzen</a>
-                </li>
-            </ul>
-            <img class="icon" src="assets/icon.png" />
-        </footer>
+    
+    <div class="container">
+        <section class="valuesContainer">
+            <div class="sensorsContainer">
+                <div class="containerHeader">Zimmer</div>
+                <div class="valueBox">
+                    <header>Temperatur</header>
+                    <div id="sensorTemperature">20°C</div>
+                </div>
+                <div class="valueBox">
+                    <header>Luftfeuchtigkeit</header>
+                    <div id="sensorHumidity">50%</div>
+                </div>
+                <div class="valueBox">
+                    <header>CO<sub>2</sub></header>
+                    <div id="sensorCO2ppm">2000ppm</div>
+                </div>
+            </div>
+            
+            <div class="weatherContainer">
+                <header class="containerHeader">Wetter</header>
+                <div class="valueBox">
+                    <header>Temperatur</header>
+                    <div id="weatherTemperature">21°C</div>
+                </div>
+                <div class="valueBox">
+                    <header>Luftfeuchtigkeit</header>
+                    <div id="weatherHumidity">50%</div>
+                </div>
+                <div class="valueBox">
+                    <header>Gefühlte Temp.</header>
+                    <div id="weatherApparentTemperature">16°C</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="controlsContainer">
+            <button class="openButton" id="openButton">Öffnen</button>
+            
+            <div class="autoEnableContainer">
+                <label class="switch">
+                    <input id="autoEnableInput" type="checkbox" />
+                    <span class="slider round"></span>
+                </label>
+                <div>Automatisch öffnen</div>
+            </div>
+        </section>
     </div>
-
+    
+    <dialog open class="windowSecurity">
+        <p>Fenster ist offen!</p>
+        <form method="dialog">
+            <button class="windowSecurityButton">OK</button>
+            <a class="windowSecurityButton" href="tel:110">Notruf</a>
+        </form>
+    </dialog>
+    
+    <dialog open class="weatherData">
+        <h2><u>Bitte lüften!</u></h2>
+        <form method="dialog">
+            <button class="weatherDataButton">OK</button>
+        </form>
+    </dialog>
+    
+    
+    
+    <footer class="footer">
+        <ul class="footerLinks">
+            <li>
+                <a href="https://wp.uni-oldenburg.de/softskills-11-gruppe-13/">Homepage</a>
+            </li>
+            <li>
+                <a href="https://github.com/DanielPXL/airmate">GitHub</a>
+            </li>
+            <li>
+                <a href="https://open-meteo.com/">Wetterdaten</a>
+            </li>
+            <li>
+                <a href="https://github.com/DanielPXL/airmate">Third-Party-Lizenzen</a>
+            </li>
+        </ul>
+        <img class="icon" src="assets/icon.png" />
+    </footer>
+    
     <script type="module" src="index.js"></script>
 </body>
 
