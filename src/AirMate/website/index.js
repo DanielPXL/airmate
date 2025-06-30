@@ -76,3 +76,4 @@ updateData();
 setInterval(updateData, 1000);
 openButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
+

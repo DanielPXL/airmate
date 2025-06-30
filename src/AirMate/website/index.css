@@ -8,6 +8,8 @@
     --button-color-active: rgb(170, 9, 9);
     --footer-background-color: rgb(192, 192, 192);
     --footer-border-color: rgb(142, 142, 142);
+    --windowSecurityButton-color-hover: rgb(97, 97, 97);
+    --windowSecurityButton-color-active: rgb(68, 68, 68);
 }
 
 .roboto-font {
@@ -108,7 +110,7 @@ body {
     min-width: 0;
 }
 
-.valueBox > header {
+.valueBox>header {
     font-size: 0.6em;
 }
 
@@ -155,6 +157,34 @@ body {
     font-size: 0.8em;
 }
 
-.footerLinks > li {
+.footerLinks>li {
     list-style-type: none;
+}
+
+.windowSecurity {
+    width: 12em;
+    height: 5em;
+    border-radius: 0.5em;
+    border-width: 0.2em;
+    border-color: orangered;
+    background-color: azure;
+}
+
+.windowSecurityButton {
+    background-color: gray;
+    border: 0.1em solid black;
+    border-radius: 0.2em;
+    font-size: 0.7em;
+    text-decoration: none;
+    color: azure;
+    padding: 0.2em;
+    cursor: pointer;
+}
+
+.windowSecurityButton:hover {
+    background-color: var(--windowSecurityButton-color-hover);
+}
+
+.windowSecurityButton:active {
+    background-color: var(--windowSecurityButton-color-active);
 }
