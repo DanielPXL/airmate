@@ -5,16 +5,16 @@
 
 
 #define TOTAL_MOVE_STEPS 800    // TODO: Muss wahrscheinlich noch angepasst werden!!
-#define ACCAELERATION_SPEED 100; //TODO: Muss wahrscheinlich noch angepasst werden!!
-#define MAX_SPEED 200 // TODO: Muss wahrscheinlich noch angepasst werden!!!
+#define ACCELERATION_SPEED 100  //TODO: Muss wahrscheinlich noch angepasst werden!!
+#define MAX_SPEED 200           // TODO: Muss wahrscheinlich noch angepasst werden!!!
 
 
 State g_state = State::Closed;
-State g_lastDirection = State::Closing; // Nur Opening oder Closing
+State g_lastDirection = State::Closing;  // Nur Opening oder Closing
 
 
-AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS); // Motor Pins
-AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS); // Motor Pins
+AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS);  // Motor Pins
+AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS);     // Motor Pins
 
 
 const char* window_getState() {
@@ -32,7 +32,7 @@ const char* window_getState() {
 
 void window_setup() {
   g_gearStepper.setMaxSpeed(MAX_SPEED);
-  g_gearStepper.setAcceleration(ACCAELERATION_SPEED);
+  g_gearStepper.setAcceleration(ACCELERATION_SPEED);
 }
 
 // Fenstersteuerung mit Button toggled durch
@@ -49,9 +49,9 @@ void window_buttonToggle() {
       window_stopMotor();
       break;
     case State::Paused:
-      if (g_lastDirection == Opening) {
+      if (g_lastDirection == State::Opening) {
         window_startClosing();
-      } else if (g_lastDirection == Closing) {
+      } else if (g_lastDirection == State::Closing) {
         window_startOpening();
       }
       break;
@@ -64,7 +64,7 @@ void window_buttonToggle() {
 // Drei Hilfsmethoden zum Ansteuern der Motoren
 // Beachte:
 // Wenn Fenster geschlossen, dann muss lockMotor agieren.
-// Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren 
+// Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren
 
 void window_startOpening() {
   g_state = State::Opening;
@@ -76,11 +76,11 @@ void window_startOpening() {
 void window_startClosing() {
   g_state = State::Closing;
   g_lastDirection = State::Closing;
-  gearStepper.moveTo(0);
+  g_gearStepper.moveTo(0);
 }
 
 void window_stopMotor() {
-  g_state = Paused;
+  g_state = State::Paused;
   // TODO: Motoren werden abgeschaltet
 }
 
@@ -89,13 +89,16 @@ void window_loop() {
   g_gearStepper.run();
 
   switch (g_state) {
-    case State::Opening: {
-      if (gearStepper.distanceToGo() == 0) g_state = State::Open;
-      break;
-    }
-    case State::Closing: {
-      if (gearStepper.distanceToGo() == 0) g_state = State::Closed;
-      // TODO: ReedSensor
-      break;
+    case State::Opening:
+      {
+        if (g_gearStepper.distanceToGo() == 0) g_state = State::Open;
+        break;
+      }
+    case State::Closing:
+      {
+        if (g_gearStepper.distanceToGo() == 0) g_state = State::Closed;
+        // TODO: ReedSensor
+        break;
+      }
   }
 }
