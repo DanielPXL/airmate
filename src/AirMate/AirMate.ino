@@ -3,9 +3,12 @@
 #include "WIFILogin.h"
 #include "WebInterface.h"
 #include "Sensors.h"
+#include "Log.h"
 
 void setup() {
+#if LOGGING_ENABLED
   Serial.begin(9600);
+#endif
   wifi_connect();
   webinterface_setup();
   window_setup();

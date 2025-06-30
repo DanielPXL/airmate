@@ -57,7 +57,13 @@ void sensors_update() {
   g_buttonOldPush = buttonPush;
 
   // CO2 Sensor lesen
+  // Funktioniert nur, wenn Logging ausgeschaltet ist
+  // (siehe Log.h für mehr Informationen)
+#if LOGGING_ENABLED
+  g_co2ppm = 404;
+#else
   g_co2ppm = co2.readCO2UART();
+#endif
 
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {

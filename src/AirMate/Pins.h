@@ -8,6 +8,6 @@
 #define MH_Z19_TX 3
 
 #define LOCKMOTOR_PINS 14, 15, 26, 25
-#define GEARMOTOR_PINS 2, 4, 5, 18
+#define GEARMOTOR_PINS 2, 4
 
 #endif

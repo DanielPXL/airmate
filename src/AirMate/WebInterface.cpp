@@ -1,6 +1,6 @@
 #include "website/dist/index_html.h"
 #include <WebServer.h>
-#include <HardwareSerial.h>
+#include "Log.h"
 #include "Window.h"
 #include "Weather.h"
 #include "Sensors.h"
@@ -54,7 +54,7 @@ void webinterface_setup() {
   server.on("/resetAuto", HTTP_POST, handleResetAuto);
 
   server.begin();
-  Serial.println("Webserver started");
+  LOG("Webserver started");
 }
 
 void webinterface_loop() {

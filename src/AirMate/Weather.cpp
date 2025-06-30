@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h> // Benötigt ArduinoJson library von Tobias Schürg etc.
-#include <HardwareSerial.h>
+#include "Log.h"
 
 const char WEATHER_URL[] = "https://api.open-meteo.com/v1/forecast?latitude=53.147755555522835&longitude=8.183846055172747&current=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature";
 
@@ -16,8 +16,7 @@ void weather_parseJson(String jsonString) {
   DeserializationError error = deserializeJson(doc, jsonString.c_str());
 
   if (error) {
-    Serial.print("JSON parse failed: ");
-    Serial.println(error.f_str());
+    LOG("JSON parse failed: %s\n", error.f_str());
     return;
   }
 
@@ -38,8 +37,7 @@ void weather_update() {
   httpClient.begin(WEATHER_URL);
   int responseCode = httpClient.GET();
   if (responseCode != 200) {
-    Serial.print("Could not GET ");
-    Serial.println(WEATHER_URL);
+    LOG("Could not GET %s\n", WEATHER_URL);
   }
 
   String jsonString = httpClient.getString();

@@ -1,12 +1,14 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-enum State {
+enum class State {
   Closed,
   Opening,
   Open,
   Closing,
   Paused,
+  Locking,
+  Unlocking
 };
 
 extern State g_state;

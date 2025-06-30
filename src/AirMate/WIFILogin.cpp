@@ -1,6 +1,6 @@
 #include "WIFILogin.h"
 #include <WiFi.h>
-#include <HardwareSerial.h>
+#include "Log.h"
 
 const char WIFI_SSID[] = "SSID_HERE";
 const char WIFI_PASSWORD[] = "PASSWORD_HERE";
@@ -8,15 +8,12 @@ const char WIFI_PASSWORD[] = "PASSWORD_HERE";
 void wifi_connect() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   WiFi.setAutoReconnect(true);
-  Serial.print("Connecting to ");
-  Serial.print(WIFI_SSID);
+  LOG("Connecting to %s", WIFI_SSID);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    LOG(".");
   }
 
-  Serial.println();
-  Serial.print("Connected. IP: ");
-  Serial.println(WiFi.localIP());
+  LOG("\nConnected. IP: %s\n", WiFi.localIP().toString());
 }

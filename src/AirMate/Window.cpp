@@ -1,17 +1,16 @@
-#include <Stepper.h>
+#include <AccelStepper.h> // benötigt AccelStepper von Mike McCauley
 #include "Pins.h"
 #include "Window.h"
 
-#define MOTOR_RPM 10 //
-#define STEPS 1024 // TODO: Muss wahrscheinlich noch angepasst werden die Steps!!!
+#define STEPSPERSECOND 100 // TODO: Muss wahrscheinlich noch angepasst werden die Steps!!!
 
 State g_state = State::Closed;
 State g_lastDirection = State::Closing; // Nur Opening oder Closing
 
 // Die beiden Zeilen blockieren aus irgendeinem Grund den restlichen Code...
 // Erst unkommentieren, wenns gebraucht wird
-Stepper g_lockStepper(STEPS, LOCKMOTOR_PINS); // Motor Pins
-Stepper g_gearStepper(STEPS, GEARMOTOR_PINS); // Motor Pins
+AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS); // Motor Pins
+AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS); // Motor Pins
 
 const char* window_getState() {
   switch (g_state) {
@@ -27,7 +26,7 @@ const char* window_getState() {
 }
 
 void window_setup() {
-  g_gearStepper.setSpeed(MOTOR_RPM);
+  g_gearStepper.setMaxSpeed(STEPSPERSECOND);
 }
 
 // Fenstersteuerung mit Button toggled durch
@@ -44,9 +43,9 @@ void window_buttonToggle() {
       window_stopMotor();
       break;
     case State::Paused:
-      if (g_lastDirection == Opening) {
+      if (g_lastDirection == State::Opening) {
         window_startClosing();
-      } else if (g_lastDirection == Closing) {
+      } else if (g_lastDirection == State::Closing) {
         window_startOpening();
       }
       break;
@@ -62,40 +61,48 @@ void window_buttonToggle() {
 // Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren 
 
 void window_startOpening() {
-  g_state = Opening;
-  g_lastDirection = Opening;
+  g_state = State::Opening;
+  g_lastDirection = State::Opening;
 }
 
 void window_startClosing() {
-  g_state = Closing;
-  g_lastDirection = Closing;
+  g_state = State::Closing;
+  g_lastDirection = State::Closing;
 }
 
 void window_stopMotor() {
-  g_state = Paused;
+  g_state = State::Paused;
   // TODO: Motoren werden abgeschaltet
 }
 
 void window_loop() {
   switch (g_state) {
-    case Closed: {
+    case State::Closed: {
       // TODO: Motor aus (window_stopMotor()), wenn Fenster zu --> Reedsensor
       break;
     }
-    case Opening: {
+    case State::Opening: {
       // TODO: Motor öffnet Fenster --> Überwachen, wie viele Steps, um zu wissen, wann komplett offen
       break;
     }
-    case Open: {
+    case State::Open: {
       // TODO: Motor aus (window_stopMotor()), wenn Fenster offen
       break;
     }
-    case Closing: {
+    case State::Closing: {
       // TODO: Motor schließt Fenster --> Überwachen, wie viel Steps, falls gestoppt wird. Zu wenn Reedsensor
       break;
     }
-    case Paused: {
-      // TODO: Motor stoppen 
+    case State::Paused: {
+      // TODO: Motoren stoppen (also einfach nichts machen?) 
+      break;
+    }
+    case State::Locking: {
+      // Lockmotor bewegen in eine Richtung
+      break;
+    }
+    case State::Unlocking: {
+      // Lockmotor bewegen in andere Richtung
       break;
     }
   }
