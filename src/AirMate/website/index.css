@@ -8,8 +8,8 @@
     --button-color-active: rgb(170, 9, 9);
     --footer-background-color: rgb(192, 192, 192);
     --footer-border-color: rgb(142, 142, 142);
-    --windowSecurityButton-color-hover: rgb(97, 97, 97);
-    --windowSecurityButton-color-active: rgb(68, 68, 68);
+    --popupButton-color-hover: rgb(97, 97, 97);
+    --popupButton-color-active: rgb(68, 68, 68);
 }
 
 .roboto-font {
@@ -182,9 +182,34 @@ body {
 }
 
 .windowSecurityButton:hover {
-    background-color: var(--windowSecurityButton-color-hover);
+    background-color: var(--popupButton-color-hover);
 }
 
 .windowSecurityButton:active {
-    background-color: var(--windowSecurityButton-color-active);
+    background-color: var(--popupButton-color-active);
+}
+
+.weatherData {
+    width: 12em;
+    height: 16em;
+    border-radius: 0.5em;
+    border-width: 0.2em;
+}
+
+.weatherDataButton {
+    background-color: gray;
+    border: 0.1em solid black;
+    border-radius: 0.2em;
+    font-size: 0.7em;
+    color: azure;
+    padding: 0.2em;
+    cursor: pointer;
+}
+
+.weatherDataButton:hover {
+    background-color: var(--popupButton-color-hover);
+}
+
+.weatherDataButton:active {
+    background-color: var(--popupButton-color-active);
 }
