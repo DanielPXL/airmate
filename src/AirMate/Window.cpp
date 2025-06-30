@@ -9,7 +9,6 @@
 #define MAX_SPEED 200 // TODO: Muss wahrscheinlich noch angepasst werden!!!
 
 
-
 State g_state = State::Closed;
 State g_lastDirection = State::Closing; // Nur Opening oder Closing
 
@@ -87,14 +86,15 @@ void window_stopMotor() {
 
 
 void window_loop() {
+  g_gearStepper.run();
 
   switch (g_state) {
     case State::Opening: {
-      if (gearStepper.distanceToGo() == 0) g_state = Open;
+      if (gearStepper.distanceToGo() == 0) g_state = State::Open;
       break;
     }
     case State::Closing: {
-      if (gearStepper.distanceToGo() == 0) g_state = Closed;
+      if (gearStepper.distanceToGo() == 0) g_state = State::Closed;
       // TODO: ReedSensor
       break;
   }
