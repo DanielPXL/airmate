@@ -31,7 +31,7 @@ MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
 void sensors_setup() {
   // button setup
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT_PULLUDOWN);
 
   // dht sensor setup
   dht.begin();
@@ -49,7 +49,7 @@ void sensors_update() {
 
   // Button prüfen
   // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
-  bool buttonPush = digitalRead(BUTTON_PIN) == LOW; // LOW = gedrückt (INPUT_PULLUP)
+  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
   if (buttonPush && !g_buttonOldPush) {
     // Button wurde gedrückt
     window_buttonToggle();
@@ -59,8 +59,12 @@ void sensors_update() {
   g_buttonOldPush = buttonPush;
 
   // CO2 Sensor lesen
+#if LOGGING_ENABLED
+  g_co2ppm = 404;
+#else
   g_co2ppm = co2.readCO2UART();
-
+#endif
+  
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
     window_startOpening();
@@ -72,13 +76,37 @@ bool sensors_shouldOpen() {
     return false;
   }
 
-
   // Taupunktberechnung
   float Taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
   float Taupunkt_2 = g_weatherDewPoint;
   float DeltaTP = Taupunkt_1 - Taupunkt_2;
 
-  // TODO
+  // Öffnungsparameter
+  // Nachts nicht lüften
+  if (!g_weatherIsDay) {
+    return false;
+  }
+
+  // Wenns zu windig ist nicht lüften
+  if (g_weatherWindSpeed > MAX_WINDSPEED) {
+    return false;
+  }
+
+  // Wenn Niederschlag nicht lüften
+  if (g_weatherPrecipitation > 0) {
+    return false;
+  }
+
+  // Temperatur auf 22°C regeln
+  if (g_temperature >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
+    return true;
+  }
+
+  // Taupunkt
+  if (DeltaTP > SCHALTminDewPoint || -DeltaTP > SCHALTminDewPoint) {
+    return true;
+  }
+
   return false;
 }
 
@@ -106,30 +134,3 @@ float sensors_taupunkt(float t, float r) {
   float tt = (b*v) / (a-v);
   return tt;
 }
-
-  // Öffnungsparameter
-
-  // Nachts nicht lüften
-  if (!g_weatherIsDay) {
-    return false;
-  }
-
-  // Temperatur auf 22°C regeln
-  if (temp >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
-    return true;
-  }
-
-  // Wenns zu windig ist nicht lüften
-  if (g_weatherWindSpeed > MAX_WINDSPEED) {
-    return false;
-  }
-
-  // Wenn Niederschlag nicht lüften
-  if (g_weatherPrecipitation > 0) {
-    return false;
-  }
-
-  // Taupunkt
-  if (DeltaTP > SCHALTminDewPoint || -1*DeltaTP > SCHALTminDewPoint) {
-    return true;
-  }
