@@ -1,7 +1,7 @@
 :root {
     --primary-color: #f7b426;
     --secondary-color: #54a3f7;
-    --background-color: rgb(255, 255, 255);
+    --background-color: #ffffff;
     --darken: rgba(0, 0, 0, 0.22);
     --big-button-color: rgb(220, 11, 11);
     --big-button-border-color: rgb(161, 11, 11);
@@ -18,21 +18,21 @@
     --popupButton-color-active: rgb(68, 68, 68);
 }
 
-.dark {
-    --primary-color: #f7b426;
-    --secondary-color: #54a3f7;
+body.dark {
+    --primary-color: #f7b5269d;
+    --secondary-color: #54a3f79d;
     --background-color: #121212;
     --darken: rgba(0, 0, 0, 0.22);
-    --big-button-color: rgb(220, 11, 11);
-    --big-button-border-color: rgb(161, 11, 11);
-    --big-button-color-hover: rgb(191, 11, 11);
-    --big-button-color-active: rgb(170, 9, 9);
-    --button-text-color: rgb(0, 0, 0);
-    --button-color: rgb(221, 221, 221);
+    --big-button-color: rgb(153, 10, 10);
+    --big-button-border-color: rgb(121, 9, 9);
+    --big-button-color-hover: rgb(134, 5, 5);
+    --big-button-color-active: rgb(105, 9, 9);
+    --button-text-color: rgb(255, 255, 255);
+    --button-color: rgb(126, 126, 126);
     --button-border-color: rgb(96, 96, 96);
-    --button-color-hover: rgb(200, 200, 200);
-    --button-color-active: rgb(179, 179, 179);
-    --footer-background-color: rgb(192, 192, 192);
+    --button-color-hover: rgb(77, 77, 77);
+    --button-color-active: rgb(61, 61, 61);
+    --footer-background-color: rgb(100, 99, 99);
     --footer-border-color: rgb(142, 142, 142);
     --popupButton-color-hover: rgb(97, 97, 97);
     --popupButton-color-active: rgb(68, 68, 68);
@@ -53,6 +53,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
+    transition: background-color 0.5s;
 }
 
 .icon {
@@ -114,6 +115,7 @@ body {
     outline: 0.14em solid var(--primary-color);
     background-color: var(--primary-color);
     border-radius: 0.2em;
+    transition: background-color 0.5s;
 }
 
 .weatherContainer {
@@ -125,6 +127,7 @@ body {
     outline: 0.14em solid var(--secondary-color);
     background-color: var(--secondary-color);
     border-radius: 0.2em;
+    transition: background-color 0.5s;
 }
 
 .valueBox {
@@ -174,6 +177,7 @@ body {
     border-top: 0.1em solid var(--footer-border-color);
     padding-left: 1em;
     padding-right: 1em;
+    transition: background-color 0.5s;
 }
 
 .footerLinks {
@@ -265,25 +269,3 @@ button:active,
     background-color: var(--popupButton-color-active);
 }
 
-.settingsContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.settingsButton {
-    width: 8em;
-    height: 2em;
-    padding: 0.2em;
-    background: gray;
-    cursor: pointer;
-    border-radius: 1em;
-}
-
-.settingsButton:hover {
-    background-color: var(--popupButton-color-hover);
-}
-
-.settingsButton:active {
-    background-color: var(--popupButton-color-active);
-}
