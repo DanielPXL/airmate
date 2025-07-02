@@ -31,7 +31,7 @@ MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
 void sensors_setup() {
   // button setup
-  pinMode(BUTTON_PIN, INPUT_PULLUDOWN);
+  pinMode(BUTTON_PIN, INPUT_PULLDOWN);
 
   // dht sensor setup
   dht.begin();
@@ -77,9 +77,9 @@ bool sensors_shouldOpen() {
   }
 
   // Taupunktberechnung
-  float Taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
-  float Taupunkt_2 = g_weatherDewPoint;
-  float DeltaTP = Taupunkt_1 - Taupunkt_2;
+  float taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
+  float taupunkt_2 = g_weatherDewPoint;
+  float deltaTP = taupunkt_1 - taupunkt_2;
 
   // Öffnungsparameter
   // Nachts nicht lüften
@@ -103,7 +103,7 @@ bool sensors_shouldOpen() {
   }
 
   // Taupunkt
-  if (DeltaTP > SCHALTminDewPoint || -DeltaTP > SCHALTminDewPoint) {
+  if (deltaTP > SCHALTminDewPoint || -deltaTP > SCHALTminDewPoint) {
     return true;
   }
 
