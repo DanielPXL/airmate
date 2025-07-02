@@ -10,6 +10,7 @@ const settingsOpenButton = document.getElementById("settingsOpenButton");
 const openButton = document.getElementById("openButton");
 const autoEnableInput = document.getElementById("autoEnableInput");
 const securityDialog = document.getElementById("securityDialog");
+const warningDialog = document.getElementById("warningDialog");
 
 async function updateData() {
     const response = await fetch("/data");
@@ -42,6 +43,22 @@ function setValues(data) {
 
     if (data.state === "alarm") {
         securityDialog.showModal();
+    }
+
+    updateWarningDialog(data);
+}
+
+function updateWarningDialog(data) {
+    if (data.sensors.temperature > 25) {
+        warningDialog.showModal();
+    }
+    
+    if (data.sensors.dewPoint >= 5.0) {
+        warningDialog.showModal8();
+    }
+
+    if (data.sensors.CO2 >= 1200) {
+        warningDialog.showModal();
     }
 }
 
