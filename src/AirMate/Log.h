@@ -2,12 +2,12 @@
 #define LOG_H
 #include <HardwareSerial.h>
 
-// Logging muss ausgeschaltet werden, wenn der CO2-Sensor
-// benutzt wird, weil wir (ohne davon zu wissen) den CO2-Sensor
-// an die selben UART-Pins angelötet haben, die auch
-// vom USB Controller benutzt werden
+// Logging ausschalten war früher mal wichtig,
+// da wir (ausversehen) den CO2-Sensor an UART0
+// angeschlossen haben, also die Pins, die auch
+// an den USB-Controller angeschlossen sind
 
-#define LOGGING_ENABLED 0
+#define LOGGING_ENABLED 1
 
 #if LOGGING_ENABLED
 #define LOG(...) Serial.printf(__VA_ARGS__)

@@ -1,7 +1,13 @@
+#include "esp32-hal-gpio.h"
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
 #include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
 // und EspSoftwareSerial library von Dirk Kaar etc
+// -------------------------------import für WifWaf Implementierung---
+#include <HardwareSerial.h>
+#include  "MHZ19.h" //MH-Z 19 CO2 Sensor library von WifWaf
+//--------------------------------------------------------------------
+
 #include "Pins.h"
 #include "Weather.h"
 #include "Sensors.h"
@@ -23,16 +29,38 @@ bool g_buttonOldPush = false;
 //Schwellwerte 
 const float HUMIDITY_THRESHOLD = 60;
 const float CO2THRESHOLD = 1000;
+const float OPTIMAL_TEMP = 22;
+const float MAX_WINDSPEED = 35;
 
 DHT dht(DTH11_PIN, DHTTYPE);
 MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
+//----------------------------------------Co2 mit WifWaf Library -----------------------------
+HardwareSerial mhzSerial(2); // Erstelle eine Instanz von HardwareSerial für UART2
+MHZ19 mhz19; // Erstelle ein Objekt der MHZ19-Klasse
+//--------------------------------------------------------------------------------------------
+
+
 void sensors_setup() {
   // button setup
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT_PULLDOWN);
+
+  // Reed sensor setup
+  pinMode(REEDSENSOR_PIN, INPUT);
 
   // dht sensor setup
   dht.begin();
+
+  //--------------------------------------------Setup CO2-----------------------------
+  mhzSerial.begin(9600, SERIAL_8N1, MH_Z19_RX, MH_Z19_TX); // Serielle Kommunikation mit dem MH-Z19 starten
+  mhz19.begin(mhzSerial); // MH-Z19-Bibliothek mit der seriellen Schnittstelle verbinden
+
+  // Optional: Sensor kalibrieren (nur einmalig, wenn nötig!)
+  mhz19.calibrate(); // Automatische Basiskalibrierung (ABC) einschalten
+  // mhz19.calibrateZero(); // Kalibrierung auf 400ppm (nur wenn der Sensor in frischer Luft ist!)
+
+  //---------------------------------------------------------------------------------
+
 }
 
 void sensors_update() {
@@ -47,7 +75,7 @@ void sensors_update() {
 
   // Button prüfen
   // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
-  bool buttonPush = digitalRead(BUTTON_PIN) == LOW; // LOW = gedrückt (INPUT_PULLUP)
+  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
   if (buttonPush && !g_buttonOldPush) {
     // Button wurde gedrückt
     window_buttonToggle();
@@ -56,14 +84,12 @@ void sensors_update() {
   // Buttonstatus speichern
   g_buttonOldPush = buttonPush;
 
-  // CO2 Sensor lesen
-  // Funktioniert nur, wenn Logging ausgeschaltet ist
-  // (siehe Log.h für mehr Informationen)
-#if LOGGING_ENABLED
-  g_co2ppm = 404;
-#else
-  g_co2ppm = co2.readCO2UART();
-#endif
+  if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
+    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
+    g_state == State::Alarm;
+  }
+
+  g_co2ppm = mhz19.getCO2();
 
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
@@ -77,15 +103,36 @@ bool sensors_shouldOpen() {
   }
 
   // Taupunktberechnung
-  float Taupunkt_1;
-  float Taupunkt_2;
-  float DeltaTP;
+  float taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
+  float taupunkt_2 = g_weatherDewPoint;
+  float deltaTP = taupunkt_1 - taupunkt_2;
 
-  Taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
-  Taupunkt_2 = g_weatherDewPoint;
-  DeltaTP = Taupunkt_1 - Taupunkt_2;
+  // Öffnungsparameter
+  // Nachts nicht lüften
+  if (!g_weatherIsDay) {
+    return false;
+  }
 
-  // TODO
+  // Wenns zu windig ist nicht lüften
+  if (g_weatherWindSpeed > MAX_WINDSPEED) {
+    return false;
+  }
+
+  // Wenn Niederschlag nicht lüften
+  if (g_weatherPrecipitation > 0) {
+    return false;
+  }
+
+  // Temperatur auf 22°C regeln
+  if (g_temperature >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
+    return true;
+  }
+
+  // Taupunkt
+  if (deltaTP > SCHALTminDewPoint || -deltaTP > SCHALTminDewPoint) {
+    return true;
+  }
+
   return false;
 }
 

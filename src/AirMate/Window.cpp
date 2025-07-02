@@ -1,16 +1,21 @@
-#include <AccelStepper.h> // benötigt AccelStepper von Mike McCauley
+#include <AccelStepper.h>
+#include <Stepper.h>
 #include "Pins.h"
 #include "Window.h"
 
-#define STEPSPERSECOND 100 // TODO: Muss wahrscheinlich noch angepasst werden die Steps!!!
+
+#define TOTAL_MOVE_STEPS 800    // TODO: Muss wahrscheinlich noch angepasst werden!!
+#define ACCELERATION_SPEED 100  //TODO: Muss wahrscheinlich noch angepasst werden!!
+#define MAX_SPEED 200           // TODO: Muss wahrscheinlich noch angepasst werden!!!
+
 
 State g_state = State::Closed;
-State g_lastDirection = State::Closing; // Nur Opening oder Closing
+State g_lastDirection = State::Closing;  // Nur Opening oder Closing
 
-// Die beiden Zeilen blockieren aus irgendeinem Grund den restlichen Code...
-// Erst unkommentieren, wenns gebraucht wird
-AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS); // Motor Pins
-AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS); // Motor Pins
+
+AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS);  // Motor Pins
+AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS);     // Motor Pins
+
 
 const char* window_getState() {
   switch (g_state) {
@@ -22,17 +27,27 @@ const char* window_getState() {
       return "open";
     case State::Closing:
       return "closing";
+    case State::Paused:
+      return "pausing";
+    case State::Locking:
+      return "locking";
+    case State::Unlocking:
+      return "unlocking";
+    case State::Alarm:
+      return "alarm";
   }
 }
 
 void window_setup() {
-  g_gearStepper.setMaxSpeed(STEPSPERSECOND);
+  g_gearStepper.setMaxSpeed(MAX_SPEED);
+  g_gearStepper.setAcceleration(ACCELERATION_SPEED);
 }
 
 // Fenstersteuerung mit Button toggled durch
 // (TODO:) Sensor- und Wetterdaten setzen entsprechend g_state
 void window_buttonToggle() {
   switch (g_state) {
+    case State::Alarm:
     case State::Closed:
       window_startOpening();
       break;
@@ -58,16 +73,19 @@ void window_buttonToggle() {
 // Drei Hilfsmethoden zum Ansteuern der Motoren
 // Beachte:
 // Wenn Fenster geschlossen, dann muss lockMotor agieren.
-// Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren 
+// Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren
 
 void window_startOpening() {
   g_state = State::Opening;
   g_lastDirection = State::Opening;
+  g_gearStepper.moveTo(TOTAL_MOVE_STEPS);
 }
+
 
 void window_startClosing() {
   g_state = State::Closing;
   g_lastDirection = State::Closing;
+  g_gearStepper.moveTo(0);
 }
 
 void window_stopMotor() {
@@ -75,35 +93,21 @@ void window_stopMotor() {
   // TODO: Motoren werden abgeschaltet
 }
 
+
 void window_loop() {
+  g_gearStepper.run();
+
   switch (g_state) {
-    case State::Closed: {
-      // TODO: Motor aus (window_stopMotor()), wenn Fenster zu --> Reedsensor
-      break;
-    }
-    case State::Opening: {
-      // TODO: Motor öffnet Fenster --> Überwachen, wie viele Steps, um zu wissen, wann komplett offen
-      break;
-    }
-    case State::Open: {
-      // TODO: Motor aus (window_stopMotor()), wenn Fenster offen
-      break;
-    }
-    case State::Closing: {
-      // TODO: Motor schließt Fenster --> Überwachen, wie viel Steps, falls gestoppt wird. Zu wenn Reedsensor
-      break;
-    }
-    case State::Paused: {
-      // TODO: Motoren stoppen (also einfach nichts machen?) 
-      break;
-    }
-    case State::Locking: {
-      // Lockmotor bewegen in eine Richtung
-      break;
-    }
-    case State::Unlocking: {
-      // Lockmotor bewegen in andere Richtung
-      break;
-    }
+    case State::Opening:
+      {
+        if (g_gearStepper.distanceToGo() == 0) g_state = State::Open;
+        break;
+      }
+    case State::Closing:
+      {
+        if (g_gearStepper.distanceToGo() == 0) g_state = State::Closed;
+        // TODO: ReedSensor
+        break;
+      }
   }
 }
