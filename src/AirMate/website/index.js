@@ -80,7 +80,7 @@ async function onAutoEnableChange() {
 
 updateData();
 setInterval(updateData, 1000);
-settingsOpenButton.addEventListener("click", onButtonPress);
+openButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
 
 const settingsDialog = document.getElementById("siteSettings");

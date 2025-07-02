@@ -4,9 +4,10 @@
 #include "Window.h"
 
 
-#define TOTAL_MOVE_STEPS 800    // TODO: Muss wahrscheinlich noch angepasst werden!!
-#define ACCELERATION_SPEED 100  //TODO: Muss wahrscheinlich noch angepasst werden!!
-#define MAX_SPEED 200           // TODO: Muss wahrscheinlich noch angepasst werden!!!
+#define OPEN_MOVE_STEPS 190    // TODO: Muss wahrscheinlich noch angepasst werden!!
+#define CLOSE_MOVE_STEPS -240    // TODO: Muss wahrscheinlich noch angepasst werden!!
+#define ACCELERATION_SPEED 400  //TODO: Muss wahrscheinlich noch angepasst werden!!
+#define MAX_SPEED 25          // TODO: Muss wahrscheinlich noch angepasst werden!!!
 
 
 State g_state = State::Closed;
@@ -78,14 +79,14 @@ void window_buttonToggle() {
 void window_startOpening() {
   g_state = State::Opening;
   g_lastDirection = State::Opening;
-  g_gearStepper.moveTo(TOTAL_MOVE_STEPS);
+  g_gearStepper.move(OPEN_MOVE_STEPS);
 }
 
 
 void window_startClosing() {
   g_state = State::Closing;
   g_lastDirection = State::Closing;
-  g_gearStepper.moveTo(0);
+  g_gearStepper.move(CLOSE_MOVE_STEPS);
 }
 
 void window_stopMotor() {
