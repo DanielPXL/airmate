@@ -124,7 +124,7 @@ bool sensors_shouldOpen() {
   }
 
   // C02 auf unter 950ppm halten
-  if (g_co2ppm >= 950) {
+  if (g_co2ppm >= 1200) {
     return true;
   }
 
