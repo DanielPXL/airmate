@@ -123,13 +123,18 @@ bool sensors_shouldOpen() {
     return false;
   }
 
-  // Temperatur auf 22°C regeln
-  if (g_temperature >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
+  // C02 auf unter 950ppm halten
+  if (g_co2ppm >= 950) {
     return true;
   }
 
   // Taupunkt
   if (deltaTP > SCHALTminDewPoint || -deltaTP > SCHALTminDewPoint) {
+    return true;
+  }
+
+  // Temperatur auf 22°C regeln
+  if (g_temperature >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
     return true;
   }
 
