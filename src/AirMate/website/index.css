@@ -2,6 +2,7 @@
     --primary-color: #f7b426;
     --secondary-color: #54a3f7;
     --background-color: #ffffff;
+    --text-color: rgb(0, 0, 0);
     --darken: rgba(0, 0, 0, 0.22);
     --big-button-color: rgb(220, 11, 11);
     --big-button-border-color: rgb(161, 11, 11);
@@ -22,6 +23,7 @@ body.dark {
     --primary-color: #f7b5269d;
     --secondary-color: #54a3f79d;
     --background-color: #121212;
+    --text-color: azure;
     --darken: rgba(0, 0, 0, 0.22);
     --big-button-color: rgb(153, 10, 10);
     --big-button-border-color: rgb(121, 9, 9);
@@ -269,3 +271,8 @@ button:active,
     background-color: var(--popupButton-color-active);
 }
 
+.footerLinks > li > a {
+    text-decoration: none;
+    color: var(--text-color);
+    transition: color 0.5s;
+}
