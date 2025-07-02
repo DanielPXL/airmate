@@ -13,6 +13,7 @@
         <link href="index.css" rel="stylesheet" />
         <link href="switch.css" rel="stylesheet" />
     </head>
+
     <body>
         <div class="containerContainer">
             <div class="container">
@@ -50,18 +51,9 @@
                     </div>
                 </section>
 
-                <section class="controlsContainer">
-                    <button class="openButton" id="openButton">Öffnen</button>
-
-                    <div class="autoEnableContainer">
-                        <label class="switch">
-                            <input id="autoEnableInput" type="checkbox" />
-                            <span class="slider round"></span>
-                        </label>
-                        <div>Automatisch öffnen</div>
-                    </div>
-                </section>
+                <button class="openButton" id="openButton">Öffnen</button>
             </div>
+
             <footer class="footer">
                 <ul class="footerLinks">
                     <li>
@@ -79,14 +71,55 @@
                         <a href="https://open-meteo.com/">Wetterdaten</a>
                     </li>
                     <li>
-                        <a href="https://github.com/DanielPXL/airmate"
+                        <a
+                            href="https://github.com/DanielPXL/airmate/blob/master/docs/THIRD-PARTY.md"
                             >Third-Party-Lizenzen</a
                         >
                     </li>
                 </ul>
-                <img class="icon" src="assets/icon.png" />
+                <img
+                    class="icon"
+                    id="settingsOpenButton"
+                    src="assets/icon.png"
+                />
             </footer>
         </div>
+
+        <dialog id="securityDialog" class="windowSecurity">
+            <h2>🚨 Fenster ist offen! 🚨</h2>
+            <form class="dialogForm" method="dialog">
+                <a class="button" href="tel:110">Notruf</a>
+                <button>Alarm ausschalten</button>
+            </form>
+        </dialog>
+
+        <dialog class="weatherData">
+            <h2><u>Bitte lüften!</u></h2>
+            <form class="dialogForm" method="dialog">
+                <button>OK</button>
+            </form>
+        </dialog>
+
+        <dialog id="siteSettings">
+            <h2>Einstellungen</h2>
+            <div class="toggleContainer">
+                <label class="switch">
+                    <input id="autoEnableInput" type="checkbox" />
+                    <span class="slider round"></span>
+                </label>
+                <div>Automatisch öffnen</div>
+            </div>
+            <div class="toggleContainer">
+                <label class="switch">
+                    <input id="darkModeInput" type="checkbox" />
+                    <span class="slider round"></span>
+                </label>
+                <div>Dark Mode</div>
+            </div>
+            <form class="dialogForm" method="dialog">
+                <button>Schließen</button>
+            </form>
+        </dialog>
 
         <script type="module" src="index.js"></script>
     </body>

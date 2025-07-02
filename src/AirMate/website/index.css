@@ -1,13 +1,43 @@
 :root {
     --primary-color: #f7b426;
     --secondary-color: #54a3f7;
+    --background-color: #ffffff;
+    --text-color: rgb(0, 0, 0);
     --darken: rgba(0, 0, 0, 0.22);
-    --button-color: rgb(220, 11, 11);
-    --button-border-color: rgb(161, 11, 11);
-    --button-color-hover: rgb(191, 11, 11);
-    --button-color-active: rgb(170, 9, 9);
+    --big-button-color: rgb(220, 11, 11);
+    --big-button-border-color: rgb(161, 11, 11);
+    --big-button-color-hover: rgb(191, 11, 11);
+    --big-button-color-active: rgb(170, 9, 9);
+    --button-text-color: rgb(0, 0, 0);
+    --button-color: rgb(221, 221, 221);
+    --button-border-color: rgb(96, 96, 96);
+    --button-color-hover: rgb(200, 200, 200);
+    --button-color-active: rgb(179, 179, 179);
     --footer-background-color: rgb(192, 192, 192);
     --footer-border-color: rgb(142, 142, 142);
+    --popupButton-color-hover: rgb(97, 97, 97);
+    --popupButton-color-active: rgb(68, 68, 68);
+}
+
+body.dark {
+    --primary-color: #f7b5269d;
+    --secondary-color: #54a3f79d;
+    --background-color: #121212;
+    --text-color: azure;
+    --darken: rgba(0, 0, 0, 0.22);
+    --big-button-color: rgb(153, 10, 10);
+    --big-button-border-color: rgb(121, 9, 9);
+    --big-button-color-hover: rgb(134, 5, 5);
+    --big-button-color-active: rgb(105, 9, 9);
+    --button-text-color: rgb(255, 255, 255);
+    --button-color: rgb(126, 126, 126);
+    --button-border-color: rgb(96, 96, 96);
+    --button-color-hover: rgb(77, 77, 77);
+    --button-color-active: rgb(61, 61, 61);
+    --footer-background-color: rgb(100, 99, 99);
+    --footer-border-color: rgb(142, 142, 142);
+    --popupButton-color-hover: rgb(97, 97, 97);
+    --popupButton-color-active: rgb(68, 68, 68);
 }
 
 .roboto-font {
@@ -21,13 +51,16 @@
 body {
     font-family: "Roboto";
     font-size: 1.6rem;
+    height: 100vh;
     margin: 0;
     padding: 0;
-    height: 100dvh;
+    background-color: var(--background-color);
+    transition: background-color 0.5s;
 }
 
 .icon {
     width: 6em;
+    cursor: pointer;
 }
 
 .containerContainer {
@@ -52,8 +85,8 @@ body {
     width: 8em;
     height: 8em;
     border-radius: 100%;
-    border: 0.2em solid var(--button-border-color);
-    background-color: var(--button-color);
+    border: 0.2em solid var(--big-button-border-color);
+    background-color: var(--big-button-color);
     color: azure;
     font-size: 1.6rem;
     cursor: pointer;
@@ -61,11 +94,11 @@ body {
 }
 
 .openButton:hover {
-    background-color: var(--button-color-hover);
+    background-color: var(--big-button-color-hover);
 }
 
 .openButton:active {
-    background-color: var(--button-color-active);
+    background-color: var(--big-button-color-active);
 }
 
 .valuesContainer {
@@ -84,6 +117,7 @@ body {
     outline: 0.14em solid var(--primary-color);
     background-color: var(--primary-color);
     border-radius: 0.2em;
+    transition: background-color 0.5s;
 }
 
 .weatherContainer {
@@ -95,6 +129,7 @@ body {
     outline: 0.14em solid var(--secondary-color);
     background-color: var(--secondary-color);
     border-radius: 0.2em;
+    transition: background-color 0.5s;
 }
 
 .valueBox {
@@ -122,7 +157,7 @@ body {
     border-radius: 0.25em;
 }
 
-.autoEnableContainer {
+.toggleContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -144,6 +179,7 @@ body {
     border-top: 0.1em solid var(--footer-border-color);
     padding-left: 1em;
     padding-right: 1em;
+    transition: background-color 0.5s;
 }
 
 .footerLinks {
@@ -157,4 +193,86 @@ body {
 
 .footerLinks > li {
     list-style-type: none;
+}
+
+.windowSecurity {
+    border-radius: 0.5em;
+    border-width: 0.2em;
+    border-color: orangered;
+    background-color: azure;
+}
+
+.dialogForm {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4em;
+    justify-content: right;
+}
+
+dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 0.5em;
+    border-width: 0.2em;
+    margin: 0;
+}
+
+dialog[open] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+}
+
+.weatherData {
+    width: 12em;
+    height: 16em;
+}
+
+button,
+.button {
+    background-color: var(--button-color);
+    border: 0.1em solid var(--button-border-color);
+    border-radius: 0.2em;
+    font-size: 0.8em;
+    color: var(--button-text-color);
+    padding: 0.2em;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+}
+
+button:hover,
+.button:hover {
+    background-color: var(--button-color-hover);
+}
+
+button:active,
+.button:active {
+    background-color: var(--button-color-active);
+}
+
+.weatherDataButton:hover {
+    background-color: var(--popupButton-color-hover);
+}
+
+.weatherDataButton:active {
+    background-color: var(--popupButton-color-active);
+}
+
+.footerLinks > li > a {
+    text-decoration: none;
+    color: var(--text-color);
+    transition: color 0.5s;
 }

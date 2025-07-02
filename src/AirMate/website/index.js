@@ -6,8 +6,10 @@ const weatherHumidityDiv = document.getElementById("weatherHumidity");
 const weatherApparentTemperatureDiv = document.getElementById(
     "weatherApparentTemperature",
 );
+const settingsOpenButton = document.getElementById("settingsOpenButton");
 const openButton = document.getElementById("openButton");
 const autoEnableInput = document.getElementById("autoEnableInput");
+const securityDialog = document.getElementById("securityDialog");
 
 async function updateData() {
     const response = await fetch("/data");
@@ -37,6 +39,10 @@ function setValues(data) {
         data.weather.apparentTemperature.toFixed(1) + "°C";
 
     autoEnableInput.checked = data.autoEnabled;
+
+    if (data.state === "alarm") {
+        securityDialog.showModal();
+    }
 }
 
 async function onButtonPress() {
@@ -74,5 +80,30 @@ async function onAutoEnableChange() {
 
 updateData();
 setInterval(updateData, 1000);
-openButton.addEventListener("click", onButtonPress);
+settingsOpenButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
+
+const settingsDialog = document.getElementById("siteSettings");
+const darkModeInput = document.getElementById("darkModeInput");
+
+settingsOpenButton.addEventListener("click", () => {
+    settingsDialog.showModal();
+});
+
+darkModeInput.addEventListener("change", () => {
+    updateDarkMode(darkModeInput.checked);
+});
+
+function updateDarkMode() {
+    if (darkModeInput.checked) {
+        document.body.classList.add("dark");
+        localStorage.setItem("darkMode", "true");
+    } else {
+        document.body.classList.remove("dark");
+        localStorage.setItem("darkMode", false);
+    }
+}
+
+const darkStorage = localStorage.getItem("darkMode");
+darkModeInput.checked = darkStorage === null ? false : darkStorage === "true";
+updateDarkMode();
