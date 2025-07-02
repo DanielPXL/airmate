@@ -3,11 +3,11 @@
 #include <DHT.h> // DHT sensor library von Adafruit
 #include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
 // und EspSoftwareSerial library von Dirk Kaar etc
-/* -------------------------------import für WifWaf Implementierung---
+// -------------------------------import für WifWaf Implementierung---
 #include <HardwareSerial.h>
 #include  "MHZ19.h" //MH-Z 19 CO2 Sensor library von WifWaf
 //--------------------------------------------------------------------
-*/
+
 #include "Pins.h"
 #include "Weather.h"
 #include "Sensors.h"
@@ -33,11 +33,11 @@ const float CO2THRESHOLD = 1000;
 DHT dht(DTH11_PIN, DHTTYPE);
 MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
-/*----------------------------------------Co2 mit WifWaf Library -----------------------------
+//----------------------------------------Co2 mit WifWaf Library -----------------------------
 HardwareSerial mhzSerial(2); // Erstelle eine Instanz von HardwareSerial für UART2
 MHZ19 mhz19; // Erstelle ein Objekt der MHZ19-Klasse
 //--------------------------------------------------------------------------------------------
-*/
+
 
 void sensors_setup() {
   // button setup
@@ -49,15 +49,15 @@ void sensors_setup() {
   // dht sensor setup
   dht.begin();
 
-  /* --------------------------------------------Setup CO2-----------------------------
-  mhzSerial.begin(9600, SERIAL_8N1, MH_Z19_RX, TMH_Z19_TX); // Serielle Kommunikation mit dem MH-Z19 starten
+  //--------------------------------------------Setup CO2-----------------------------
+  mhzSerial.begin(9600, SERIAL_8N1, MH_Z19_RX, MH_Z19_TX); // Serielle Kommunikation mit dem MH-Z19 starten
   mhz19.begin(mhzSerial); // MH-Z19-Bibliothek mit der seriellen Schnittstelle verbinden
 
   // Optional: Sensor kalibrieren (nur einmalig, wenn nötig!)
-  // mhz19.calibrate(); // Automatische Basiskalibrierung (ABC) einschalten
+  mhz19.calibrate(); // Automatische Basiskalibrierung (ABC) einschalten
   // mhz19.calibrateZero(); // Kalibrierung auf 400ppm (nur wenn der Sensor in frischer Luft ist!)
 
-  *///---------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------
 
 }
 
@@ -87,24 +87,7 @@ void sensors_update() {
     g_state == State::Alarm;
   }
 
-  // CO2 Sensor lesen
-  // Funktioniert nur, wenn Logging ausgeschaltet ist
-  // (siehe Log.h für mehr Informationen)
-#if LOGGING_ENABLED
-  g_co2ppm = 404;
-#else
-  g_co2ppm = co2.readCO2UART();
-#endif
-
-//-------------------------------------------------------------------------------------------
-  /* möglicher neuer Code CO2
-  int co2;
-
-  // Lese den CO2-Wert
-  co2 = mhz19.getCO2();  // mittels Softwarecalibrierung
-
-  */
-//-------------------------------------------------------------------------------------------
+  g_co2ppm = mhz19.getCO2();
 
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
