@@ -105,7 +105,7 @@ bool sensors_shouldOpen() {
   // Taupunktberechnung
   float taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
   float taupunkt_2 = g_weatherDewPoint;
-  float deltaTP = taupunkt_2 - taupunkt_1;
+  float deltaTP = taupunkt_1 - taupunkt_2;
 
   // Öffnungsparameter
   // Nachts nicht lüften
