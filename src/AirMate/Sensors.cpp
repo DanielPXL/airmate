@@ -29,6 +29,8 @@ bool g_buttonOldPush = false;
 //Schwellwerte 
 const float HUMIDITY_THRESHOLD = 60;
 const float CO2THRESHOLD = 1000;
+const float OPTIMAL_TEMP = 22;
+const float MAX_WINDSPEED = 35;
 
 DHT dht(DTH11_PIN, DHTTYPE);
 MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
@@ -73,7 +75,7 @@ void sensors_update() {
 
   // Button prüfen
   // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
-  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH; 
+  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
   if (buttonPush && !g_buttonOldPush) {
     // Button wurde gedrückt
     window_buttonToggle();
@@ -101,15 +103,36 @@ bool sensors_shouldOpen() {
   }
 
   // Taupunktberechnung
-  float Taupunkt_1;
-  float Taupunkt_2;
-  float DeltaTP;
+  float taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
+  float taupunkt_2 = g_weatherDewPoint;
+  float deltaTP = taupunkt_1 - taupunkt_2;
 
-  Taupunkt_1 = sensors_taupunkt(g_temperature, g_humidity);
-  Taupunkt_2 = g_weatherDewPoint;
-  DeltaTP = Taupunkt_1 - Taupunkt_2;
+  // Öffnungsparameter
+  // Nachts nicht lüften
+  if (!g_weatherIsDay) {
+    return false;
+  }
 
-  // TODO
+  // Wenns zu windig ist nicht lüften
+  if (g_weatherWindSpeed > MAX_WINDSPEED) {
+    return false;
+  }
+
+  // Wenn Niederschlag nicht lüften
+  if (g_weatherPrecipitation > 0) {
+    return false;
+  }
+
+  // Temperatur auf 22°C regeln
+  if (g_temperature >= OPTIMAL_TEMP && g_weatherTemperature <= OPTIMAL_TEMP) {
+    return true;
+  }
+
+  // Taupunkt
+  if (deltaTP > SCHALTminDewPoint || -deltaTP > SCHALTminDewPoint) {
+    return true;
+  }
+
   return false;
 }
 
