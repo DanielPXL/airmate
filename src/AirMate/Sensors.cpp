@@ -1,7 +1,13 @@
+#include "esp32-hal-gpio.h"
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
 #include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
 // und EspSoftwareSerial library von Dirk Kaar etc
+// -------------------------------import für WifWaf Implementierung---
+#include <HardwareSerial.h>
+#include  "MHZ19.h" //MH-Z 19 CO2 Sensor library von WifWaf
+//--------------------------------------------------------------------
+
 #include "Pins.h"
 #include "Weather.h"
 #include "Sensors.h"
@@ -29,12 +35,32 @@ const float MAX_WINDSPEED = 35;
 DHT dht(DTH11_PIN, DHTTYPE);
 MHZ co2(MH_Z19_RX, MH_Z19_TX, MHZ19C);
 
+//----------------------------------------Co2 mit WifWaf Library -----------------------------
+HardwareSerial mhzSerial(2); // Erstelle eine Instanz von HardwareSerial für UART2
+MHZ19 mhz19; // Erstelle ein Objekt der MHZ19-Klasse
+//--------------------------------------------------------------------------------------------
+
+
 void sensors_setup() {
   // button setup
   pinMode(BUTTON_PIN, INPUT_PULLDOWN);
 
+  // Reed sensor setup
+  pinMode(REEDSENSOR_PIN, INPUT);
+
   // dht sensor setup
   dht.begin();
+
+  //--------------------------------------------Setup CO2-----------------------------
+  mhzSerial.begin(9600, SERIAL_8N1, MH_Z19_RX, MH_Z19_TX); // Serielle Kommunikation mit dem MH-Z19 starten
+  mhz19.begin(mhzSerial); // MH-Z19-Bibliothek mit der seriellen Schnittstelle verbinden
+
+  // Optional: Sensor kalibrieren (nur einmalig, wenn nötig!)
+  mhz19.calibrate(); // Automatische Basiskalibrierung (ABC) einschalten
+  // mhz19.calibrateZero(); // Kalibrierung auf 400ppm (nur wenn der Sensor in frischer Luft ist!)
+
+  //---------------------------------------------------------------------------------
+
 }
 
 void sensors_update() {
@@ -58,13 +84,13 @@ void sensors_update() {
   // Buttonstatus speichern
   g_buttonOldPush = buttonPush;
 
-  // CO2 Sensor lesen
-#if LOGGING_ENABLED
-  g_co2ppm = 404;
-#else
-  g_co2ppm = co2.readCO2UART();
-#endif
-  
+  if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
+    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
+    g_state == State::Alarm;
+  }
+
+  g_co2ppm = mhz19.getCO2();
+
   // If shouldOpen(), do it
   if (sensors_shouldOpen()) {
     window_startOpening();

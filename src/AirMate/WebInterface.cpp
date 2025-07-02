@@ -21,8 +21,8 @@ void sendData() {
   char dataJson[512];
   sprintf(
     dataJson,
-    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %f}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"status\": \"%s\", \"autoEnabled\": %d}",
-    g_temperature, g_humidity, g_co2ppm, g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint, g_weatherApparentTemperature, window_getState(), g_autoEnabled
+    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %i}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"state\": \"%s\", \"autoEnabled\": %d}",
+    g_temperature, g_humidity, g_co2ppm, g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint, g_weatherApparentTemperature, window_getState(), g_autoEnabled 
   );
   server.send(
     200,

@@ -8,7 +8,8 @@ enum class State {
   Closing,
   Paused,
   Locking,
-  Unlocking
+  Unlocking,
+  Alarm
 };
 
 extern State g_state;
