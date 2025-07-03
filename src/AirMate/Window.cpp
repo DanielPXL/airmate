@@ -5,11 +5,12 @@
 #include "Log.h"
 
 
-#define OPEN_MOVE_STEPS 200    // TODO: Muss wahrscheinlich noch angepasst werden!!
-#define CLOSE_MOVE_STEPS -40    // TODO: Muss wahrscheinlich noch angepasst werden!!
-#define ACCELERATION_SPEED 400  //TODO: Muss wahrscheinlich noch angepasst werden!!
-#define MAX_SPEED 25          // TODO: Muss wahrscheinlich noch angepasst werden!!!
-
+#define OPEN_MOVE_STEPS 200   
+#define CLOSE_MOVE_STEPS -40   
+#define ACCELERATION_SPEED 400
+#define MAX_SPEED 25          
+#define UNLOCK_MOVE_STEPS 512
+#define LOCK_MOVE_STEPS 0
 
 State g_state = State::Closed;
 State g_lastDirection = State::Closing;  // Nur Opening oder Closing
@@ -64,9 +65,13 @@ void window_buttonToggle() {
       break;
     case State::Paused:
       if (g_lastDirection == State::Opening) {
-        window_startClosing();
+        g_state = State::Closing;
+        g_lastDirection = State::Closing;
+        g_gearStepper.moveTo(CLOSE_MOVE_STEPS);
       } else if (g_lastDirection == State::Closing) {
-        window_startOpening();
+        g_state = State::Opening;
+        g_lastDirection = State::Opening;
+        g_gearStepper.moveTo(OPEN_MOVE_STEPS);
       }
       break;
     case State::Open:
@@ -81,17 +86,17 @@ void window_buttonToggle() {
 // Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren
 
 void window_startOpening() {
-  if (g_state == State::Closed || g_state == State::Paused) {
+  if (g_state == State::Closed) {
     LOG("Opening!\n");
-    g_state = State::Opening;
+    g_state = State::Unlocking;
     g_lastDirection = State::Opening;
-    g_gearStepper.moveTo(OPEN_MOVE_STEPS);
+    g_lockStepper.moveTo(UNLOCK_MOVE_STEPS);
   }
 }
 
 
 void window_startClosing() {
-  if (g_state == State::Open || g_state == State::Paused) {
+  if (g_state == State::Open) {
     LOG("Closing!\n");
     g_state = State::Closing;
     g_lastDirection = State::Closing;
@@ -101,12 +106,12 @@ void window_startClosing() {
 
 void window_stopMotor() {
   g_state = State::Paused;
-  // TODO: Motoren werden abgeschaltet
+  g_gearStepper.stop();
 }
-
 
 void window_loop() {
   g_gearStepper.run();
+  g_lockStepper.run();
 
   switch (g_state) {
     case State::Opening:
@@ -120,7 +125,8 @@ void window_loop() {
     case State::Closing:
       {
         if (g_gearStepper.distanceToGo() == 0) {
-          g_state = State::Closed;
+          g_state = State::Locking;
+          g_lockStepper.moveTo(LOCK_MOVE_STEPS);
         }
         break;
       }
@@ -132,5 +138,20 @@ void window_loop() {
         }
         break;
       }
+    case State::Locking:
+      {
+        if (g_lockStepper.distanceToGo() == 0) {
+          g_state = State::Closed;
+        }
+        break;
+      }
+    case State::Unlocking:
+     {
+      if (g_lockStepper.distanceToGo() == 0) {
+        g_state = State::Opening;
+        g_gearStepper.moveTo(OPEN_MOVE_STEPS);
+      }
+      break;
+     }
   }
 }
