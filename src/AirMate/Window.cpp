@@ -18,6 +18,9 @@ State g_lastDirection = State::Closing;  // Nur Opening oder Closing
 AccelStepper g_lockStepper(AccelStepper::FULL4WIRE, LOCKMOTOR_PINS);  // Motor Pins
 AccelStepper g_gearStepper(AccelStepper::DRIVER, GEARMOTOR_PINS);     // Motor Pins
 
+uint32_t g_closeTime;
+uint32_t g_closeTimeGoal = 5 * 1000 * 60;  // 5 Minuten
+
 
 const char* window_getState() {
   switch (g_state) {
@@ -108,13 +111,25 @@ void window_loop() {
   switch (g_state) {
     case State::Opening:
       {
-        if (g_gearStepper.distanceToGo() == 0) g_state = State::Open;
+        if (g_gearStepper.distanceToGo() == 0) {
+          g_state = State::Open;
+          g_closeTime = millis();
+        };
         break;
       }
     case State::Closing:
       {
-        if (g_gearStepper.distanceToGo() == 0) g_state = State::Closed;
-        // TODO: ReedSensor
+        if (g_gearStepper.distanceToGo() == 0) {
+          g_state = State::Closed;
+        }
+        break;
+      }
+    case State::Open:
+      {
+        uint32_t time_now = millis();
+        if (time_now - g_closeTime > g_closeTimeGoal) {
+          window_startClosing();
+        }
         break;
       }
   }
