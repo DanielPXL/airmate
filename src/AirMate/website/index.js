@@ -46,13 +46,15 @@ function setValues(data) {
     }
 
     updateWarningDialog(data);
+
+    openButton.innerText = stateToButtonText(data.state);
 }
 
 function updateWarningDialog(data) {
     if (data.sensors.temperature > 25) {
         warningDialog.showModal();
     }
-    
+
     if (data.sensors.dewPoint >= 5.0) {
         warningDialog.showModal8();
     }
@@ -78,6 +80,25 @@ async function onButtonPress() {
     setValues(data);
 }
 
+function stateToButtonText(state) {
+    switch (state) {
+        case "closed":
+            return "Öffnen";
+        case "closing":
+            return "Stop";
+        case "open":
+            return "Schließen";
+        case "opening":
+            return "Stop";
+        case "locking":
+            return "Schließt ab...";
+        case "unlocking":
+            return "Schließt auf...";
+        case "alarm":
+            return "Schließen";
+    }
+}
+
 async function onAutoEnableChange() {
     const url = autoEnableInput.checked ? "/setAuto" : "/resetAuto";
     const response = await fetch(url, { method: "POST" });
@@ -97,7 +118,7 @@ async function onAutoEnableChange() {
 
 updateData();
 setInterval(updateData, 1000);
-settingsOpenButton.addEventListener("click", onButtonPress);
+openButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
 
 const settingsDialog = document.getElementById("siteSettings");
