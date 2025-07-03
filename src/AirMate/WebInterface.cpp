@@ -18,11 +18,34 @@ void handleIndex() {
 }
 
 void sendData() {
-  char dataJson[512];
+  char dataJson[1024];
   sprintf(
     dataJson,
-    "{\"sensors\": {\"temperature\": %f, \"humidity\": %f, \"co2ppm\": %i}, \"weather\": {\"temperature\": %f, \"humidity\": %f, \"dewpoint\": %f, \"apparentTemperature\": %f}, \"state\": \"%s\", \"autoEnabled\": %d}",
-    g_temperature, g_humidity, g_co2ppm, g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint, g_weatherApparentTemperature, window_getState(), g_autoEnabled 
+    R"json(
+      {
+        "sensors": {
+          "temperature": %f,
+          "humidity": %f,
+          "co2ppm": %i,
+          "dewpoint": %f
+        },
+        "weather": {
+          "temperature": %f,
+          "humidity": %f,
+          "dewpoint": %f,
+          "apparentTemperature": %f,
+          "windSpeed": %f,
+          "precipitation": %f,
+          "isDay": %d
+        },
+        "state": "%s",
+        "autoEnabled": %d
+      }
+    )json",
+    g_temperature, g_humidity, g_co2ppm, g_dewPoint,
+    g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint,
+    g_weatherApparentTemperature, g_weatherWindSpeed, g_weatherPrecipitation,
+    g_weatherIsDay, window_getState(), g_autoEnabled
   );
   server.send(
     200,
@@ -52,6 +75,7 @@ void webinterface_setup() {
   server.on("/buttonPushed", HTTP_POST, handleButtonPush);
   server.on("/setAuto", HTTP_POST, handleSetAuto);
   server.on("/resetAuto", HTTP_POST, handleResetAuto);
+  // server.on("setCloseTime", HTTP_POST, handleSetCloseTime);
 
   server.begin();
   LOG("Webserver started");
