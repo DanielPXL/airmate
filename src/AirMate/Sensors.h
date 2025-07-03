@@ -6,6 +6,7 @@ extern bool g_autoEnabled;
 extern float g_temperature;
 extern float g_humidity;
 extern int32_t g_co2ppm;
+extern float g_dewPoint;
 
 void sensors_setup();
 void sensors_update();
