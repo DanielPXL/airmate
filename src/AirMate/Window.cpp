@@ -2,11 +2,13 @@
 #include <Stepper.h>
 #include "Pins.h"
 #include "Window.h"
+#include "Log.h"
 
 
-#define TOTAL_MOVE_STEPS 800    // TODO: Muss wahrscheinlich noch angepasst werden!!
-#define ACCELERATION_SPEED 100  //TODO: Muss wahrscheinlich noch angepasst werden!!
-#define MAX_SPEED 200           // TODO: Muss wahrscheinlich noch angepasst werden!!!
+#define OPEN_MOVE_STEPS 200    // TODO: Muss wahrscheinlich noch angepasst werden!!
+#define CLOSE_MOVE_STEPS -40    // TODO: Muss wahrscheinlich noch angepasst werden!!
+#define ACCELERATION_SPEED 400  //TODO: Muss wahrscheinlich noch angepasst werden!!
+#define MAX_SPEED 25          // TODO: Muss wahrscheinlich noch angepasst werden!!!
 
 
 State g_state = State::Closed;
@@ -79,16 +81,22 @@ void window_buttonToggle() {
 // Wenn geöffnet werden soll, muss lockMotor erst öffnen, dann gearMotor aktivieren
 
 void window_startOpening() {
-  g_state = State::Opening;
-  g_lastDirection = State::Opening;
-  g_gearStepper.moveTo(TOTAL_MOVE_STEPS);
+  if (g_state == State::Closed || g_state == State::Paused) {
+    LOG("Opening!\n");
+    g_state = State::Opening;
+    g_lastDirection = State::Opening;
+    g_gearStepper.moveTo(OPEN_MOVE_STEPS);
+  }
 }
 
 
 void window_startClosing() {
-  g_state = State::Closing;
-  g_lastDirection = State::Closing;
-  g_gearStepper.moveTo(0);
+  if (g_state == State::Open || g_state == State::Paused) {
+    LOG("Closing!\n");
+    g_state = State::Closing;
+    g_lastDirection = State::Closing;
+    g_gearStepper.moveTo(CLOSE_MOVE_STEPS);
+  }
 }
 
 void window_stopMotor() {

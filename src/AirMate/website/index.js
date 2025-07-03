@@ -43,6 +43,8 @@ function setValues(data) {
     if (data.state === "alarm") {
         securityDialog.showModal();
     }
+
+    openButton.innerText = stateToButtonText(data.state);
 }
 
 async function onButtonPress() {
@@ -59,6 +61,25 @@ async function onButtonPress() {
     }
 
     setValues(data);
+}
+
+function stateToButtonText(state) {
+    switch (state) {
+        case "closed":
+            return "Öffnen";
+        case "closing":
+            return "Stop";
+        case "open":
+            return "Schließen";
+        case "opening":
+            return "Stop";
+        case "locking":
+            return "Schließt ab...";
+        case "unlocking":
+            return "Schließt auf...";
+        case "alarm":
+            return "Schließen";
+    }
 }
 
 async function onAutoEnableChange() {
@@ -80,7 +101,7 @@ async function onAutoEnableChange() {
 
 updateData();
 setInterval(updateData, 1000);
-settingsOpenButton.addEventListener("click", onButtonPress);
+openButton.addEventListener("click", onButtonPress);
 autoEnableInput.addEventListener("click", onAutoEnableChange);
 
 const settingsDialog = document.getElementById("siteSettings");
