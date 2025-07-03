@@ -66,6 +66,8 @@ function updateWarningDialog(data) {
         return;
     }
 
+    warningLastShown = Date.now();
+
     if (data.sensors.temperature > 25) {
         warningDialog.showModal();
     }
@@ -109,6 +111,8 @@ function stateToButtonText(state) {
             return "Schließt ab...";
         case "unlocking":
             return "Schließt auf...";
+        case "pausing":
+            return "Pausiert...";
         case "alarm":
             return "Schließen";
     }

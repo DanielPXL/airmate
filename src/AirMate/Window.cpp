@@ -5,12 +5,14 @@
 #include "Log.h"
 
 
-#define OPEN_MOVE_STEPS 200   
-#define CLOSE_MOVE_STEPS -40   
-#define ACCELERATION_SPEED 400
-#define MAX_SPEED 25          
-#define UNLOCK_MOVE_STEPS 512
-#define LOCK_MOVE_STEPS 0
+#define OPEN_MOVE_STEPS 200
+#define CLOSE_MOVE_STEPS -40
+#define GEAR_ACCELERATION 400
+#define GEAR_MAX_SPEED 25 
+#define UNLOCK_MOVE_STEPS 1024
+#define LOCK_MOVE_STEPS 1024
+#define LOCK_ACCELERATION 400
+#define LOCK_MAX_SPEED 75
 
 State g_state = State::Closed;
 State g_lastDirection = State::Closing;  // Nur Opening oder Closing
@@ -45,12 +47,13 @@ const char* window_getState() {
 }
 
 void window_setup() {
-  g_gearStepper.setMaxSpeed(MAX_SPEED);
-  g_gearStepper.setAcceleration(ACCELERATION_SPEED);
+  g_gearStepper.setMaxSpeed(GEAR_MAX_SPEED);
+  g_gearStepper.setAcceleration(GEAR_ACCELERATION);
+  g_lockStepper.setMaxSpeed(LOCK_MAX_SPEED);
+  g_lockStepper.setAcceleration(LOCK_ACCELERATION);
 }
 
 // Fenstersteuerung mit Button toggled durch
-// (TODO:) Sensor- und Wetterdaten setzen entsprechend g_state
 void window_buttonToggle() {
   switch (g_state) {
     case State::Alarm:
@@ -67,7 +70,7 @@ void window_buttonToggle() {
       if (g_lastDirection == State::Opening) {
         g_state = State::Closing;
         g_lastDirection = State::Closing;
-        g_gearStepper.moveTo(CLOSE_MOVE_STEPS);
+        g_gearStepper.moveTo(CLOSE_MOVE_STEPS - 5);
       } else if (g_lastDirection == State::Closing) {
         g_state = State::Opening;
         g_lastDirection = State::Opening;
@@ -90,7 +93,7 @@ void window_startOpening() {
     LOG("Opening!\n");
     g_state = State::Unlocking;
     g_lastDirection = State::Opening;
-    g_lockStepper.moveTo(UNLOCK_MOVE_STEPS);
+    g_lockStepper.move(UNLOCK_MOVE_STEPS);
   }
 }
 
@@ -126,7 +129,7 @@ void window_loop() {
       {
         if (g_gearStepper.distanceToGo() == 0) {
           g_state = State::Locking;
-          g_lockStepper.moveTo(LOCK_MOVE_STEPS);
+          g_lockStepper.move(LOCK_MOVE_STEPS);
         }
         break;
       }

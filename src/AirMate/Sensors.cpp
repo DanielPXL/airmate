@@ -25,8 +25,6 @@ float g_humidity = 55;
 int32_t g_co2ppm = 1200;
 float g_dewPoint = 20;
 
-bool g_buttonOldPush = false;
-
 //Schwellwerte 
 const float HUMIDITY_THRESHOLD = 60;
 const float CO2THRESHOLD = 1000;
@@ -64,6 +62,7 @@ void sensors_setup() {
 
 }
 
+// Wird nur alle 10s ausgeführt
 void sensors_update() {
   // Read DHT11 and update g_temperature and g_humidity
   float temp = dht.readTemperature();
@@ -74,17 +73,6 @@ void sensors_update() {
     g_humidity = hum;
     g_dewPoint = sensors_taupunkt(g_temperature, g_humidity);
   }
-
-  // Button prüfen
-  // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
-  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
-  if (buttonPush && !g_buttonOldPush) {
-    // Button wurde gedrückt
-    window_buttonToggle();
-  }
-
-  // Buttonstatus speichern
-  g_buttonOldPush = buttonPush;
 
   if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
     //Das Fenster sitzt nicht am Ramen sollte aber zu sein
@@ -163,4 +151,19 @@ float sensors_taupunkt(float t, float r) {
   // Taupunkttemperatur (°C)
   float tt = (b*v) / (a-v);
   return tt;
+}
+
+// Wird so oft wie möglich ausgeführt
+void sensors_loop() {
+  // Button prüfen
+  // Solange Button gedrückt wird, wird kein weiterer Toggle ausgelöst
+  static bool buttonOldPush = false;
+  bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
+  if (buttonPush && !buttonOldPush) {
+    // Button wurde gedrückt
+    window_buttonToggle();
+  }
+
+  // Buttonstatus speichern
+  buttonOldPush = buttonPush;
 }

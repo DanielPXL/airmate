@@ -35,4 +35,5 @@ void loop() {
 
   window_loop();
   webinterface_loop();
+  sensors_loop();
 }

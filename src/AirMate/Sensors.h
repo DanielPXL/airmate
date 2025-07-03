@@ -10,6 +10,7 @@ extern float g_dewPoint;
 
 void sensors_setup();
 void sensors_update();
+void sensors_loop();
 
 bool sensors_shouldOpen();
 float sensors_taupunkt(float t, float r);
