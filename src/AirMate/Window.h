@@ -14,6 +14,7 @@ enum class State {
 
 extern State g_state;
 extern State g_lastDirection;
+extern uint32_t g_closeTimeGoal;
 
 const char* window_getState();
 

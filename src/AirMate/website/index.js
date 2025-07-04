@@ -6,6 +6,7 @@ const securityDialog = document.getElementById("securityDialog");
 const warningDialog = document.getElementById("warningDialog");
 const dataDialog = document.getElementById("dataDialog");
 const dataContainer = document.getElementById("dataContainer");
+const closeTimeSelect = document.getElementById("closeTimeSelect");
 
 let g_state = "closed";
 
@@ -13,6 +14,7 @@ async function updateData() {
     const response = await fetch("/data");
     if (response.status !== 200) {
         console.log("Could not reach /data");
+        return;
     }
 
     let data;
@@ -30,6 +32,7 @@ async function updateData() {
     updateWarningDialog(data);
     openButton.innerText = stateToButtonText(data.state);
     autoEnableInput.checked = data.autoEnabled;
+    closeTimeSelect.value = `${data.closeTime}min`;
 
     formatData(data);
     setDataElements(data);
@@ -166,3 +169,9 @@ darkModeInput.checked = darkStorage === null ? false : darkStorage === "true";
 updateDarkMode();
 
 dataContainer.addEventListener("click", () => dataDialog.showModal());
+
+closeTimeSelect.addEventListener("change", async () => {
+    // Remove "min"
+    const value = closeTimeSelect.value.slice(0, -3);
+    await fetch(`/setCloseTime${value}`, { method: "POST" });
+});

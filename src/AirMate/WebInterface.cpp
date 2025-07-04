@@ -10,11 +10,10 @@ WebServer server(80);
 
 void handleIndex() {
   server.send_P(
-    200, 
+    200,
     "text/html\r\nContent-Encoding: gzip", /* Extrem ekelhaft */
     reinterpret_cast<const char*>(index_html),
-    index_html_len
-  );
+    index_html_len);
 }
 
 void sendData() {
@@ -39,19 +38,20 @@ void sendData() {
           "isDay": %d
         },
         "state": "%s",
-        "autoEnabled": %d
+        "autoEnabled": %d,
+        "closeTime": %u
       }
     )json",
     g_temperature, g_humidity, g_co2ppm, g_dewPoint,
     g_weatherTemperature, g_weatherHumidity, g_weatherDewPoint,
     g_weatherApparentTemperature, g_weatherWindSpeed, g_weatherPrecipitation,
-    g_weatherIsDay, window_getState(), g_autoEnabled
+    g_weatherIsDay, window_getState(), g_autoEnabled, g_closeTimeGoal / (60 * 1000)
   );
+
   server.send(
     200,
     "application/json",
-    dataJson
-  );
+    dataJson);
 }
 
 void handleButtonPush() {
@@ -69,13 +69,25 @@ void handleResetAuto() {
   sendData();
 }
 
+void handleSetCloseTime(uint32_t minTime) {
+  g_closeTimeGoal = minTime * 60 * 1000;
+  sendData();
+}
+
 void webinterface_setup() {
   server.on("/", handleIndex);
   server.on("/data", sendData);
   server.on("/buttonPushed", HTTP_POST, handleButtonPush);
   server.on("/setAuto", HTTP_POST, handleSetAuto);
   server.on("/resetAuto", HTTP_POST, handleResetAuto);
-  // server.on("setCloseTime", HTTP_POST, handleSetCloseTime);
+
+  // Ich hab (auf die Schnelle) keinen besseren Weg gefunden,
+  // Daten an den Server zu senden, also machen wir das so
+  server.on("setCloseTime3", HTTP_POST, []() { handleSetCloseTime(3); });
+  server.on("setCloseTime5", HTTP_POST, []() { handleSetCloseTime(5); });
+  server.on("setCloseTime10", HTTP_POST, []() { handleSetCloseTime(10); });
+  server.on("setCloseTime15", HTTP_POST, []() { handleSetCloseTime(15); });
+  server.on("setCloseTime20", HTTP_POST, []() { handleSetCloseTime(20); });
 
   server.begin();
   LOG("Webserver started");
