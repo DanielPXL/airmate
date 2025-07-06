@@ -12,12 +12,13 @@
 #include "Weather.h"
 #include "Sensors.h"
 #include "Window.h"
+#include "Log.h"
 
 #define DHTTYPE DHT11
 
 #define SCHALTminDewPoint 5.0 // minimaler Taupunktunterschied, bei dem das Fenster öffnen soll
 
-bool g_autoEnabled = true;
+bool g_autoEnabled = false;
 
 //Messwerte
 float g_temperature = 20;
@@ -72,11 +73,6 @@ void sensors_update() {
     g_temperature = temp;
     g_humidity = hum;
     g_dewPoint = sensors_taupunkt(g_temperature, g_humidity);
-  }
-
-  if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
-    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
-    g_state == State::Alarm;
   }
 
   g_co2ppm = mhz19.getCO2();
@@ -166,4 +162,9 @@ void sensors_loop() {
 
   // Buttonstatus speichern
   buttonOldPush = buttonPush;
+
+  if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
+    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
+    g_state == State::Alarm;
+  }
 }
