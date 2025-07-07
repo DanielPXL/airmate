@@ -20,6 +20,8 @@ void setup() {
 }
 
 void loop() {
+  // Wetterdaten alle 60s updaten
+  // Sensordaten alle 10s updaten
   static uint64_t lastWeatherUpdate = 0;
   static uint64_t lastSensorUpdate = 0;
   uint64_t now = millis();

@@ -8,14 +8,20 @@
 
 WebServer server(80);
 
+// Die index.html-Datei wird zunächst mit Vite in eine einzelne Datei kompiliert (siehe "website" Ordner)
+// Anschließend wird die erstelle Datei mit gzip komprimiert um Speicherplatz auf dem ESP32 zu sparen
+// (Alle Browser können seit 20 Jahren gzip-Dateien nativ dekomprimieren, solange ein Header gesetzt wird)
+// Die komprimierte Datei wird dann mit xxd in eine .h-Datei umgewandelt und diese wird oben included und
+// in dieser Funktion an den Browser gesendet
 void handleIndex() {
   server.send_P(
     200,
-    "text/html\r\nContent-Encoding: gzip", /* Extrem ekelhaft */
+    "text/html\r\nContent-Encoding: gzip", /* Extrem ekelhaft, funktioniert aber super */
     reinterpret_cast<const char*>(index_html),
     index_html_len);
 }
 
+// Wird regelmäßig vom Client abgerufen
 void sendData() {
   char dataJson[1024];
   sprintf(
@@ -55,7 +61,7 @@ void sendData() {
 }
 
 void handleButtonPush() {
-  window_buttonToggle();
+  window_toggleOpen();
   sendData();
 }
 

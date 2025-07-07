@@ -60,24 +60,27 @@ void sensors_setup() {
   // mhz19.calibrateZero(); // Kalibrierung auf 400ppm (nur wenn der Sensor in frischer Luft ist!)
 
   //---------------------------------------------------------------------------------
-
 }
 
 // Wird nur alle 10s ausgeführt
 void sensors_update() {
-  // Read DHT11 and update g_temperature and g_humidity
+  // DHT11 lesen und g_temperature und g_humidity updaten
   float temp = dht.readTemperature();
   float hum = dht.readHumidity();
 
   if (!isnan(temp) && !isnan(hum)) {
     g_temperature = temp;
     g_humidity = hum;
+
+    // Taupunkt hängt von Temperatur und Luftfeuchtigkeit ab,
+    // also auch updaten
     g_dewPoint = sensors_taupunkt(g_temperature, g_humidity);
   }
 
+  // CO2-Sensorwert updaten
   g_co2ppm = mhz19.getCO2();
 
-  // If shouldOpen(), do it
+  // Falls shouldOpen(), öffnen
   if (sensors_shouldOpen()) {
     window_startOpening();
   }
@@ -87,8 +90,6 @@ bool sensors_shouldOpen() {
   if (!g_autoEnabled) {
     return false;
   }
-
-  float deltaTP = g_dewPoint - g_weatherDewPoint;
 
   // Öffnungsparameter
   // Nachts nicht lüften
@@ -106,12 +107,13 @@ bool sensors_shouldOpen() {
     return false;
   }
 
-  // C02 auf unter 950ppm halten
+  // C02 auf unter 1200ppm halten
   if (g_co2ppm >= 1200) {
     return true;
   }
 
   // Taupunkt
+  float deltaTP = g_dewPoint - g_weatherDewPoint;
   if (deltaTP > SCHALTminDewPoint) {
     return true;
   }
@@ -157,14 +159,14 @@ void sensors_loop() {
   bool buttonPush = digitalRead(BUTTON_PIN) == HIGH;
   if (buttonPush && !buttonOldPush) {
     // Button wurde gedrückt
-    window_buttonToggle();
+    window_toggleOpen();
   }
 
   // Buttonstatus speichern
   buttonOldPush = buttonPush;
 
   if (g_state == State::Closed && digitalRead(REEDSENSOR_PIN) == LOW) {
-    //Das Fenster sitzt nicht am Ramen sollte aber zu sein
+    // Das Fenster sitzt nicht am Rahmen sollte aber zu sein
     g_state == State::Alarm;
   }
 }
