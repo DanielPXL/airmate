@@ -1,4 +1,4 @@
-![<img src="./assets/Mac App icon.png" width="30" />]
+<img src="./assets/Mac App icon.png" width="100" />
 
 
 # AirMate
