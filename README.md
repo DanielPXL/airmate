@@ -1,4 +1,4 @@
-![Logo](https://github.com/DanielPXL/airmate/blob/master/assets/Mac%20App%20icon%20small.png)
+![<img src="./assets/Mac App icon.png" width="30" />]
 
 
 # AirMate
