@@ -1,5 +1,7 @@
+<p align="center">
+  <img src="http://some_place.com/image.png](https://github.com/DanielPXL/airmate/blob/master/assets/Mac%20App%20icon.png" />
+</p>
 
-![Logo](https://github.com/DanielPXL/airmate/blob/master/assets/Mac%20App%20icon.png)
 
 # AirMate
 Der *AirMate* ist ein Multifunktionstool, welches mehrere der 17 Nachhaltigkeitsziele der UN erfüllen kann, nämlich: 
