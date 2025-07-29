@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="http://some_place.com/image.png](https://github.com/DanielPXL/airmate/blob/master/assets/Mac%20App%20icon.png" />
-</p>
+![Logo](https://github.com/DanielPXL/airmate/blob/master/assets/Mac%20App%20icon%20small.png)
 
 
 # AirMate
