@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <ArduinoJson.h> // Benötigt ArduinoJson library von Tobias Schürg etc.
+#include <ArduinoJson.h> // Benötigt ArduinoJson library von Benoit Blanchon
 #include "Log.h"
 
 const char WEATHER_URL[] = "https://api.open-meteo.com/v1/forecast?latitude=53.147755555522835&longitude=8.183846055172747&current=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,wind_speed_10m,precipitation,is_day";

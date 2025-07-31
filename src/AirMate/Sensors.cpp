@@ -1,8 +1,6 @@
 #include "esp32-hal-gpio.h"
 #include <stdint.h>
 #include <DHT.h> // DHT sensor library von Adafruit
-#include <MHZ.h> // MH-Z CO2 Sensors library von Tobias Schürg etc
-// und EspSoftwareSerial library von Dirk Kaar etc
 // -------------------------------import für WifWaf Implementierung---
 #include <HardwareSerial.h>
 #include  "MHZ19.h" //MH-Z 19 CO2 Sensor library von WifWaf

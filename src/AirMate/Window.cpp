@@ -1,5 +1,4 @@
 #include <AccelStepper.h>
-#include <Stepper.h>
 #include "Pins.h"
 #include "Window.h"
 #include "Log.h"
