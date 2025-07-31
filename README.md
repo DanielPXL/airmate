@@ -1,5 +1,5 @@
 <img src="./assets/Mac App icon.png" width="300" />
-
+[Bedienungsanleitung](https://github.com/DanielPXL/airmate/blob/master/docs/BDA%20AirMate.pdf)
 ---
 
 Der _AirMate_ ist ein sich automatisch öffnendes Fenster, welches sich anhand von Sensordaten selbst öffnet. Er hostet außerdem eine Website, welche die Sensordaten anzeigt. Über diese und einen Knopf am Fenster selbst lässt sich das Fenster auch manuell öffnen.
