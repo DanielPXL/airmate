@@ -25,7 +25,7 @@ Zum Kompilieren die Datei `AirMate.ino` in der Arduino IDE öffnen und auf den U
 
 ## Webinterface
 
-Das Webinterface wird auf dem ESP gehostet. Eine kompilierte Version des Webinterfaces ist bereits in diesem Repository enthalten. Wenn das Webinterface bearbeitet wurde, muss es neu kompiliert werden. Mehr dazu im [hier](./src/AirMate/website/README.md).
+Das Webinterface wird auf dem ESP gehostet. Eine kompilierte Version des Webinterfaces ist bereits in diesem Repository enthalten. Wenn das Webinterface bearbeitet wurde, muss es neu kompiliert werden. Mehr dazu [hier](./src/AirMate/website/README.md).
 
 # Hardware
 
@@ -54,7 +54,7 @@ Von der Leistung her sind sie auf ein Leichtholzfenster im Eigenbau ausgelegt
 - Nema 17 mit A4988
   Stepper-Motor für das Öffnen des Fensters
 - 28BYJ-48 mit ULN2003
-  Stepper-Motor für das betätigen das Verschlussmechanismus des Fensters
+  Stepper-Motor für das Betätigen das Verschlussmechanismus des Fensters
 
 ## 3D Druck
 
