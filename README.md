@@ -1,5 +1,5 @@
 <img src="./assets/Mac App icon.png" width="300" />
-[Bedienungsanleitung](https://github.com/DanielPXL/airmate/blob/master/docs/BDA%20AirMate.pdf)
+[Bedienungsanleitung](https://github.com/DanielPXL/airmate/blob/master/docs/BDA%20AirMate.pdf) 
 
 ---
 
